@@ -7,8 +7,8 @@ VERSION = 0.0.1
 
 OBJF =    src/main.o \
           src/vec2web.o
-EXTERN_LIBS = -L/usr/local/lib -lg2 -lgd -lpng -lz -lm -lfreetype -ljpeg -L$(HOME)/local/lib -lqcadlib -ldxflib -L/usr/X11R6/lib -lX11
-INCLUDES = -I$(HOME)/local/include
+EXTERN_LIBS = -L/usr/local/lib -lg2 -lgd -lpng -lz -lm -lfreetype -ljpeg -L$(HOME)/local/lib -lqcad -ldxf -L$(QTDIR)/lib -lqt -L/usr/X11R6/lib -lX11
+INCLUDES = -I$(HOME)/local/include -I$(QTDIR)/include
 
 all: vec2web
 
