@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.h,v 1.3 2002/11/10 15:07:41 andrew23 Exp $
+**  $Id: vec2web.h,v 1.4 2002/11/12 16:26:00 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -48,6 +48,7 @@ public:
     void convert();
     bool output(const char* format);
     bool outputQt(const char* format);
+    bool outputMing();
     //bool outputG2(const char* format);
 
     double transformX(double x);
