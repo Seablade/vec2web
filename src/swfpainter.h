@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.h,v 1.2 2003/02/13 20:54:33 xiru Exp $
+**  $Id: swfpainter.h,v 1.3 2003/02/13 21:08:15 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -82,8 +82,8 @@ public:
 
 private:
     SWFMovie* movie;
-	int width;
-	int colr,colg,colb;
+    int width;
+    int colr,colg,colb;
 };
 
 #endif

@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.25 2003/02/13 20:54:33 xiru Exp $
+**  $Id: vec2web.cpp,v 1.26 2003/02/13 21:08:15 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -279,7 +279,7 @@ bool Vec2Web::outputDXML() {
             }
             break;
 
-	default:
+        default:
             break;
         }
 

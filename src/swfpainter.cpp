@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.cpp,v 1.2 2003/02/13 20:54:32 xiru Exp $
+**  $Id: swfpainter.cpp,v 1.3 2003/02/13 21:08:15 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -31,10 +31,10 @@
  */
 SWFPainter::SWFPainter(SWFMovie* mov)
         : RS_Painter() {
-	
-	this->movie = mov;
-	width=1;
-	colr=colg=colb=0;
+
+    this->movie = mov;
+    width=1;
+    colr=colg=colb=0;
 }
 
 
@@ -59,7 +59,8 @@ void SWFPainter::drawPoint(double x, double y) {
     shape->drawLineTo((float)x+1, (float)y);
     shape->movePenTo((float)x, (float)y-1);
     shape->drawLineTo((float)x, (float)y+1);
-    movie->add(shape);
+    movie->add
+    (shape);
 }
 
 /**
@@ -70,7 +71,8 @@ void SWFPainter::drawLine(double x1, double y1, double x2, double y2) {
     shape->setLine(width, colr,colg,colb);
     shape->movePenTo((float)x1, (float)y1);
     shape->drawLineTo((float)x2, (float)y2);
-    movie->add(shape);
+    movie->add
+    (shape);
 }
 
 /**
@@ -91,7 +93,7 @@ void SWFPainter::drawArc(double cx, double cy, double radius,
                          double x1, double y1, double x2, double y2,
                          bool reversed) {
 
-	drawArc(cx, cy, radius, a1, a2, reversed);
+    drawArc(cx, cy, radius, a1, a2, reversed);
 
 }
 
@@ -107,25 +109,25 @@ void SWFPainter::drawArc(double cx, double cy, double radius,
 void SWFPainter::drawArc(double cx, double cy, double radius,
                          double a1, double a2,
                          bool reversed) {
-	SWFShape *shape = new SWFShape();
-	shape->setLine(width, colr,colg,colb);
-	shape->movePenTo((float)cx, (float)cy);
-	float ang1, ang2;
-	ang1 = (float)( (M_PI * 2 - a1) * ARAD + 90 );
-	ang2 = (float)( (M_PI * 2 - a2) * ARAD + 90 );
-	if (reversed) {
-		if (ang1 > ang2) {
-			ang2 += 360;
-		}
-		shape->drawArc((float)radius, ang1, ang2);
-	}
-	else {
-		if (ang2 > ang1) {
-			ang1 += 360;
-		}
-		shape->drawArc((float)radius, ang2, ang1);
-	}
-	movie->add(shape);
+    SWFShape *shape = new SWFShape();
+    shape->setLine(width, colr,colg,colb);
+    shape->movePenTo((float)cx, (float)cy);
+    float ang1, ang2;
+    ang1 = (float)( (M_PI * 2 - a1) * ARAD + 90 );
+    ang2 = (float)( (M_PI * 2 - a2) * ARAD + 90 );
+    if (reversed) {
+        if (ang1 > ang2) {
+            ang2 += 360;
+        }
+        shape->drawArc((float)radius, ang1, ang2);
+    } else {
+        if (ang2 > ang1) {
+            ang1 += 360;
+        }
+        shape->drawArc((float)radius, ang2, ang1);
+    }
+    movie->add
+    (shape);
 }
 
 
@@ -141,7 +143,8 @@ void SWFPainter::drawCircle(double cx, double cy, double radius) {
     shape->setLine(width, colr,colg,colb);
     shape->movePenTo(cx, cy);
     shape->drawCircle(radius);
-    movie->add(shape);
+    movie->add
+    (shape);
 }
 
 
@@ -154,7 +157,7 @@ void SWFPainter::drawEllipse(double cx, double cy,
                              double angle,
                              double a1, double a2,
                              bool reversed) {
-
+ 
     //if(radius1<=0.5 && radius2<=0.5) {
     //    drawGridPoint((int)cx, (int)cy);
     //} else {
@@ -162,7 +165,7 @@ void SWFPainter::drawEllipse(double cx, double cy,
         int   ciy;            //
         double aStep;         // Angle Step (rad)
         double a;             // Current Angle (rad)
-
+ 
         // Angle step in rad
         if (radius1<radius2) {
             if (radius1<1.0e-4) {
@@ -177,13 +180,13 @@ void SWFPainter::drawEllipse(double cx, double cy,
                 aStep=asin(2.0/radius2);
             }
         }
-
+ 
         if(aStep<0.05) {
             aStep = 0.05;
         }
-
+ 
 		aStep=0.01;
-
+ 
         RS_Vector vp;
         RS_Vector vc(cx, cy);
         vp.set(cx+cos(a1)*radius1,
@@ -235,9 +238,9 @@ void SWFPainter::drawTextH(int x1, int y1,
              Qt::AlignLeft|Qt::AlignVCenter,
              text);
 }
-
-
-
+ 
+ 
+ 
 void SWFPainter::drawTextV(int x1, int y1,
                            int x2, int y2,
                            const QString& text) {
@@ -246,24 +249,24 @@ void SWFPainter::drawTextV(int x1, int y1,
     wm.rotate(-90.0);
     setWorldMatrix(wm);
     //rotate(-90.0);
-
+ 
     drawText(x1, y1, x2, y2,
              Qt::AlignRight|Qt::AlignVCenter,
              text);
-
+ 
     restore();
 }
-
+ 
 void SWFPainter::fillRect(int x1, int y1, int w, int h,
                           const RS_Color& col) {
     QPainter::fillRect(x1, y1, w, h, col);
 }
-
-
+ 
+ 
 void SWFPainter::fillTriangle(int x1, int y1,
                               int x2, int y2,
                               int x3, int y3) {
-
+ 
 	QPointArray arr(3);
 	arr.putPoints(0, 3, x1,y1, x2,y2, x3,y3);
 	setBrush(pen().color());
@@ -299,40 +302,40 @@ RS_Pen SWFPainter::getPen() {
 */
 void SWFPainter::setPen(const RS_Pen& pen) {
     width = RS::qw(pen.getWidth());
-	colr = pen.getColor().red();
-	colg = pen.getColor().green();
-	colb = pen.getColor().blue();
+    colr = pen.getColor().red();
+    colg = pen.getColor().green();
+    colb = pen.getColor().blue();
 }
 
 void SWFPainter::setPen(const RS_Color& color) {
-	colr = color.red();
-	colg = color.green();
-	colb = color.blue();
+    colr = color.red();
+    colg = color.green();
+    colb = color.blue();
 }
 
 void SWFPainter::setPen(int r, int g, int b) {
-	colr = r;
-	colg = g;
-	colb = b;
+    colr = r;
+    colg = g;
+    colb = b;
 }
 /*
 //void SWFPainter::setColor(const QColor& color) {
 //	setPen(color);
 //}
-
+ 
 void SWFPainter::setXORMode() {
     setRasterOp(XorROP);
 }
-
+ 
 void SWFPainter::setNormalMode() {
     setRasterOp(CopyROP);
 }
-
+ 
 void SWFPainter::setClipRect(int x, int y, int w, int h) {
     QPainter::setClipRect(x, y, w, h);
     setClipping(true);
 }
-
+ 
 void SWFPainter::resetClipping() {
     setClipping(false);
 }
