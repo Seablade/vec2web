@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: graphicview.h,v 1.4 2003/03/10 11:20:22 andrew23 Exp $
+**  $Id: graphicview.h,v 1.5 2003/03/15 02:46:42 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -72,8 +72,10 @@ public:
     virtual RS_String requestFileSaveAsDialog() { return ""; }
     virtual RS_String requestFileOpenDialog() { return ""; }
     virtual void requestDimensionOptions(RS_DimensionData& , bool ) {}
-    virtual void requestDimLinearOptions(RS_DimLinearData& , bool ) {};
+    virtual void requestDimLinearOptions(RS_DimLinearData& , bool ) {}
     virtual void requestArcOptions(RS_ArcData& , bool) {}
+    virtual void requestCircleOptions(RS_CircleData&, bool) {}
+    virtual void requestSnapDistOptions(double&, bool) {}
 
     virtual void updateCoordinateWidget(const RS_Vector& ,
                                         const RS_Vector& ) {}
