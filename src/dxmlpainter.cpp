@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: dxmlpainter.cpp,v 1.4 2003/02/26 12:55:33 xiru Exp $
+**  $Id: dxmlpainter.cpp,v 1.5 2003/02/26 14:04:44 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -138,21 +138,22 @@ void DXMLPainter::drawEllipse(double cx, double cy,
                              double angle,
                              double a1, double a2,
                              bool reversed) {
-    float ang1, ang2;
-    ang1 = (float)( (M_PI * 2 - a1) * ARAD + 90 );
-    ang2 = (float)( (M_PI * 2 - a2) * ARAD + 90 );
+    float ang, ang1, ang2;
+    ang = (float)( (M_PI * 2 - angle) * ARAD );
+    ang1 = (float)( (M_PI * 2 - a1) * ARAD );
+    ang2 = (float)( (M_PI * 2 - a2) * ARAD );
     if (reversed) {
         if (ang1 > ang2) {
             ang2 += 360;
         }
         fprintf(dxml, "  <ellipse x=\"%f\" y=\"%f\" radius1=\"%f\" radius2=\"%f\" angle1=\"%f\" angle2=\"%f\" angle3=\"%f\" />\n",
-        (float)cx, (float)cy, (float)radius1, (float)radius2, (float)angle, ang1, ang2);
+        (float)cx, (float)cy, (float)radius1, (float)radius2, ang, ang1, ang2);
     } else {
         if (ang2 > ang1) {
             ang1 += 360;
         }
         fprintf(dxml, "  <ellipse x=\"%f\" y=\"%f\" radius1=\"%f\" radius2=\"%f\" angle1=\"%f\" angle2=\"%f\" angle3=\"%f\" />\n",
-        (float)cx, (float)cy, (float)radius1, (float)radius2, (float)angle, ang2, ang1);
+        (float)cx, (float)cy, (float)radius1, (float)radius2, ang, ang2, ang1);
     }
 }
 
