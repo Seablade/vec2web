@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: dxmlpainter.h,v 1.8 2003/09/15 12:59:13 andrew23 Exp $
+**  $Id: dxmlpainter.h,v 1.9 2003/10/06 16:52:27 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -50,9 +50,9 @@ public:
                              double angle,
                              double a1, double a2,
                              bool reversed);
-	virtual void drawImg(RS_Img& , const RS_Vector& , 
-			double , const RS_Vector& ,
-			int , int , int , int ) {}
+    virtual void drawImg(RS_Img& , const RS_Vector& , 
+			 double , const RS_Vector& ,
+			 int , int , int , int ) {}
     virtual void drawTextH(int /*x1*/, int /*y1*/,
                            int /*x2*/, int /*y2*/,
                            const QString& /*text*/) {}
@@ -69,15 +69,15 @@ public:
     virtual void setPen(const RS_Pen& pen);
     virtual void setPen(const RS_Color& color);
     virtual void setPen(int r, int g, int b);
-	virtual void disablePen() {}
-	virtual void setBrush(const RS_Color& /*color*/) {}
-	virtual void drawPolygon(const RS_PointArray& /*a*/) {}
+    virtual void disablePen() {}
+    virtual void setBrush(const RS_Color& /*color*/) {}
+    virtual void drawPolygon(const RS_PointArray& /*a*/) {}
     virtual void setXORMode() {}
     virtual void setNormalMode() {}
     virtual void setClipRect(int /*x*/, int /*y*/,
                              int /*w*/, int /*h*/) {}
     virtual void resetClipping() {}
-private:
+ private:
     FILE* dxml;
     int width;
     int colr,colg,colb;

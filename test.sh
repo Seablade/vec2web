@@ -18,8 +18,8 @@ for inputFile in `find ./test -name "*.dxf"`
 do
 	echo "Input: $inputFile"
 	outputFile=${inputFile%.*}
-	#echo "  Output: $outputFile.swf"
-	#./vec2web $inputFile $outputFile.swf -x 800 -y 600
+	echo "  Output: $outputFile.swf"
+	./vec2web $inputFile $outputFile.swf -x 800 -y 600
 	echo "  Output: $outputFile.png"
 	./vec2web $inputFile $outputFile.png -x 800 -y 600
 	#echo "  Output: $outputFile.gif"

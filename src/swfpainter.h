@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.h,v 1.12 2003/09/02 20:31:10 andrew23 Exp $
+**  $Id: swfpainter.h,v 1.13 2003/10/06 16:52:27 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -38,7 +38,7 @@ class SWFPainter: public RS_Painter {
 public:
     SWFPainter(SWFMovie* mov);
     virtual ~SWFPainter();
-    virtual void drawGridPoint(const RS_Vector& /*p*/) {}
+    virtual void drawGridPoint(const RS_Vector&) {}
     virtual void drawPoint(const RS_Vector& p);
     virtual void drawLine(const RS_Vector& p1, const RS_Vector& p2);
     virtual void drawArc(const RS_Vector& cp, double radius,
@@ -48,12 +48,15 @@ public:
     virtual void drawArc(const RS_Vector& cp, double radius,
                          double a1, double a2,
                          bool reversed);
-    virtual void drawCircle(const RS_Vector& /*cp*/, double /*radius*/) {}
+    virtual void drawCircle(const RS_Vector&, double /*radius*/) {}
     virtual void drawEllipse(const RS_Vector& cp,
                              double radius1, double radius2,
                              double angle,
                              double a1, double a2,
                              bool reversed);
+    virtual void drawImg(RS_Img& , const RS_Vector& , 
+			 double , const RS_Vector& ,
+			 int , int , int , int ) {}
     virtual void drawTextH(int /*x1*/, int /*y1*/,
                            int /*x2*/, int /*y2*/,
                            const QString& /*text*/) {}
@@ -70,12 +73,13 @@ public:
     virtual void setPen(const RS_Pen& pen);
     virtual void setPen(const RS_Color& color);
     virtual void setPen(int r, int g, int b);
-	virtual void disablePen() {}
-	virtual void setBrush(const RS_Color& /*color*/) {}
-	virtual void drawPolygon(const RS_PointArray& /*a*/) {}
+    virtual void disablePen() {}
+    virtual void setBrush(const RS_Color& /*color*/) {}
+    virtual void drawPolygon(const RS_PointArray& /*a*/) {}
     virtual void setXORMode() {}
     virtual void setNormalMode() {}
-    virtual void setClipRect(int /*x*/, int /*y*/, int /*w*/, int /*h*/) {}
+    virtual void setClipRect(int /*x*/, int /*y*/,
+                             int /*w*/, int /*h*/) {}
     virtual void resetClipping() {}
 private:
     SWFMovie* movie;
