@@ -19,9 +19,9 @@ INCLUDEPATH += ../../dxflib/include \
                ../../qcadlib/include
                
 # detect Qt:
-exists( $$(QTDIR)/lib/libqt-mt.so ) {
-    CONFIG  += thread
-}
+#exists( $$(QTDIR)/lib/libqt-mt.so ) {
+#    CONFIG  += thread
+#}
 
 # detect ming
 #unix {
