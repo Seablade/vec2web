@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.22 2003/02/12 14:08:19 xiru Exp $
+**  $Id: vec2web.cpp,v 1.23 2003/02/12 16:41:49 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -216,9 +216,9 @@ bool Vec2Web::outputMing(int compressLevel) {
             }
             break;
 
-//	case RS::EntityDimAligned: 
-//	case RS::EntityDimLinear: 
-//	case RS::EntityText: 
+	case RS::EntityDimAligned: 
+	case RS::EntityDimLinear: 
+	case RS::EntityText: 
         case RS::EntityPolyline: {
                 RS_Polyline* l = (RS_Polyline*)e;
                 bool first = true;
