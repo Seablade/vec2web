@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: dxmlpainter.h,v 1.7 2003/09/02 20:31:10 andrew23 Exp $
+**  $Id: dxmlpainter.h,v 1.8 2003/09/15 12:59:13 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -50,6 +50,9 @@ public:
                              double angle,
                              double a1, double a2,
                              bool reversed);
+	virtual void drawImg(RS_Img& , const RS_Vector& , 
+			double , const RS_Vector& ,
+			int , int , int , int ) {}
     virtual void drawTextH(int /*x1*/, int /*y1*/,
                            int /*x2*/, int /*y2*/,
                            const QString& /*text*/) {}

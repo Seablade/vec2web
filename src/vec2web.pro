@@ -1,18 +1,21 @@
 TEMPLATE    = app
 CONFIG      += qt warn_on debug
-DEFINES     += NO_FPARSER
+#DEFINES     += NO_FPARSER
 
 unix {
     LIBS    += -L../../qcadlib/lib -lqcad \
-               -L../../dxflib/lib -ldxf
+               -L../../dxflib/lib -ldxf \
+			   -L../../fparser/lib -lfparser
 }
 
 win32 {
     LIBS    += ../../qcadlib/lib/qcad.lib \
-               ../../dxflib/lib/dxflib.lib
+               ../../dxflib/lib/dxflib.lib \
+			   ../../fparser/lib/fparser.lib
 }
 
 INCLUDEPATH += ../../dxflib/include \
+               ../../fparser/include \
                ../../qcadlib/include
                
 # detect Qt:

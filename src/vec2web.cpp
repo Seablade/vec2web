@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.35 2003/09/02 20:31:10 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.36 2003/09/15 12:59:13 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -63,8 +63,8 @@ Vec2Web::Vec2Web () {
 void Vec2Web::convert() {
 
     // Read the DXF into graphic object
-    RS_Import import(graphic);
-    import.fileImport(inputFile);
+    RS_Import import(&graphic);
+    import.fileImport(inputFile, RS2::FormatUnknown);
 
     // preprocessing:
     if (blackWhite) {
