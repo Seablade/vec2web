@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.cpp,v 1.7 2003/02/27 17:11:21 xiru Exp $
+**  $Id: swfpainter.cpp,v 1.8 2003/02/28 19:05:00 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -81,7 +81,8 @@ void SWFPainter::drawLine(double x1, double y1, double x2, double y2) {
  */
 void SWFPainter::drawArc(double cx, double cy, double radius,
                          double a1, double a2,
-                         double x1, double y1, double x2, double y2,
+                         double /*x1*/, double /*y1*/, 
+						 double /*x2*/, double /*y2*/,
                          bool reversed) {
     drawArc(cx, cy, radius, a1, a2, reversed);
 }

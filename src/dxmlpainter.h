@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: dxmlpainter.h,v 1.3 2003/02/27 17:11:20 xiru Exp $
+**  $Id: dxmlpainter.h,v 1.4 2003/02/28 19:04:59 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -34,7 +34,7 @@ class DXMLPainter: public RS_Painter {
 public:
     DXMLPainter(char* dxml);
     virtual ~DXMLPainter();
-    virtual void drawGridPoint(double x1, double y1) {}
+    virtual void drawGridPoint(double /*x1*/, double /*y1*/) {}
     virtual void drawPoint(double x1, double y1);
     virtual void drawLine(double x1, double y1, double x2, double y2);
     virtual void drawArc(double cx, double cy, double radius,
@@ -44,19 +44,23 @@ public:
     virtual void drawArc(double cx, double cy, double radius,
                          double a1, double a2,
                          bool reversed);
-    virtual void drawCircle(double cx, double cy, double radius) {}
+    virtual void drawCircle(double /*cx*/, double /*cy*/, double /*radius*/) {}
     virtual void drawEllipse(double cx, double cy,
                              double radius1, double radius2,
                              double angle,
                              double a1, double a2,
                              bool reversed);
-    virtual void drawTextH(int x1, int y1, int x2, int y2, const QString& text) {}
-    virtual void drawTextV(int x1, int y1, int x2, int y2, const QString& text) {}
-    virtual void fillRect(int x1, int y1, int w, int h,
-                          const RS_Color& col) {}
-    virtual void fillTriangle(int x1, int y1,
-                              int x2, int y2,
-                              int x3, int y3) {}
+    virtual void drawTextH(int /*x1*/, int /*y1*/,
+                           int /*x2*/, int /*y2*/,
+                           const QString& /*text*/) {}
+    virtual void drawTextV(int /*x1*/, int /*y1*/,
+                           int /*x2*/, int /*y2*/,
+                           const QString& /*text*/) {}
+    virtual void fillRect(int /*x1*/, int /*y1*/, int /*w*/, int /*h*/,
+                          const RS_Color& /*col*/) {}
+    virtual void fillTriangle(int /*x1*/, int /*y1*/,
+                              int /*x2*/, int /*y2*/,
+                              int /*x3*/, int /*y3*/) {}
     virtual void setPreviewPen() {}
     virtual RS_Pen getPen();
     virtual void setPen(const RS_Pen& pen);
@@ -64,7 +68,8 @@ public:
     virtual void setPen(int r, int g, int b);
     virtual void setXORMode() {}
     virtual void setNormalMode() {}
-    virtual void setClipRect(int x, int y, int w, int h) {}
+    virtual void setClipRect(int /*x*/, int /*y*/,
+                             int /*w*/, int /*h*/) {}
     virtual void resetClipping() {}
 private:
     FILE* dxml;

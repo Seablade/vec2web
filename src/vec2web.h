@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.h,v 1.8 2003/02/13 20:54:33 xiru Exp $
+**  $Id: vec2web.h,v 1.9 2003/02/28 19:05:01 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -24,6 +24,7 @@
 #include "rs_graphic.h"
 #include "rs_vector.h"
 #include <stdio.h>
+#include <qprinter.h>
 
 
 /**
@@ -45,12 +46,22 @@ public:
     void setScaleUp(bool on) {
         scaleUp=on;
     }
+	void setOrientation(QPrinter::Orientation o) {
+		orientation = o;
+	}
+	void setPageSize(QPrinter::PageSize ps) {
+		pageSize = ps;
+	}
+	void setBlackWhite(bool bw) {
+		blackWhite = bw;
+	}
 
     void convert();
     bool output(const char* format);
     bool outputQt(const char* format);
     bool outputMing(int compressLevel=9);
     bool outputDXML();
+	bool outputPS();
 
     double transformX(double x);
     double transformY(double y, bool swap=false);
@@ -68,6 +79,12 @@ private:
     RS_Vector size;
     //! Scale graphic up if too small?
     bool scaleUp;
+	//! Page orientation for PS
+	QPrinter::Orientation orientation;
+	//! Page size for PS
+	QPrinter::PageSize pageSize;
+	//! Black white flag
+	bool blackWhite;
     //! Scale Factor for the graphic
     double factor;
     //! Offset of the graphics zero point in pixel

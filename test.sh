@@ -25,11 +25,13 @@ do
 	./vec2web $inputFile $outputFile.jpeg -x 800 -y 600
 	./vec2web $inputFile $outputFile.xbm -x 800 -y 600
 	./vec2web $inputFile $outputFile.xpm -x 800 -y 600
-	./vec2web $inputFile $outputFile.pnm -x 800 -y 600
-	./vec2web $inputFile $outputFile.mng -x 800 -y 600
+	./vec2web $inputFile $outputFile.pbm -x 800 -y 600
+	./vec2web $inputFile $outputFile.pgm -x 800 -y 600
+	./vec2web $inputFile $outputFile.ppm -x 800 -y 600
+	#./vec2web $inputFile $outputFile.mng -x 800 -y 600
 	./vec2web $inputFile $outputFile.bmp -x 800 -y 600
-	#./vec2web $inputFile $outputFile.ps -x 800 -y 600
-	#./vec2web $inputFile $outputFile.wbmp -x 800 -y 600
+	./vec2web $inputFile $outputFile.ps -o l -s A4
+	./vec2web $inputFile ${outputFile}_bw.ps -b -o l -s A4
 	./vec2web $inputFile $outputFile.dxml -x 800 -y 600
 done
 

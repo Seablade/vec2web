@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.27 2003/02/14 00:08:33 xiru Exp $
+**  $Id: vec2web.cpp,v 1.28 2003/02/28 19:05:00 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -31,6 +31,7 @@
 #include "dxmlpainter.h"
 
 #include <qimage.h>
+#include <qpaintdevicemetrics.h>
 #include <ctype.h>
 
 #ifdef SWF_SUPPORT
@@ -62,12 +63,20 @@ void Vec2Web::convert() {
     RS_Import import(graphic);
     import.fileImport(inputFile);
 
-    // Default file format
-    if (strlen(outputFile)==0) {
-        output("PNG");
-        return;
-    }
+	// preprocessing:
+	if (blackWhite) {
+		RS_Color black(0,0,0);
+		for (RS_Entity* e=graphic.firstEntity();
+		     e!=NULL; e=graphic.nextEntity()) {
 
+			RS_Pen pen = e->getPen();
+			pen.setColor(black);
+			e->setPen(pen);
+		}
+	}
+
+	// find out the format (extension) and transform the 
+	//   extensuion to uppercase
     int len = strlen(outputFile);
     int i=len-2;
     while (i>0 && outputFile[i]!='.') {
@@ -107,11 +116,13 @@ bool Vec2Web::output(const char* format) {
     offset.set(10 - (int)(graphic.getMin().x * factor),
                10 - (int)(graphic.getMin().y * factor));
 
-    if ( ! strcmp(format, "SWF") ) {
+    if ( !strcmp(format, "SWF") ) {
         outputMing(9);
-    } else if ( ! strcmp(format, "DXML") ) {
+    } else if ( !strcmp(format, "DXML") ) {
         outputDXML();
-    } else {
+	} else if (!strcmp(format, "PS") || !strcmp(format, "EPS")) {
+		outputPS();
+	} else {
         outputQt(format);
     }
 
@@ -120,7 +131,10 @@ bool Vec2Web::output(const char* format) {
 
 
 /**
- * Outputs a png image from the graphic.
+ * Outputs a png, bmp, ... image from the graphic.
+ *
+ * @param format Either one of "PNG", "BMP", "XPM", "JPG" and more
+ *               depending on your Qt installation.
  */
 bool Vec2Web::outputQt(const char* format) {
 
@@ -186,7 +200,8 @@ bool Vec2Web::outputMing(int compressLevel) {
 
 
 /**
- * Outputs a DXML file (a minimalistic XML representation of the DXF file format).
+ * Outputs a DXML file (a minimalistic XML representation of the DXF 
+ * file format).
  *
  * Example:
  *
@@ -199,7 +214,6 @@ bool Vec2Web::outputMing(int compressLevel) {
  * 
  * \author Fabiano Weimar dos Santos (Xiru) <fabiano@x3ng.com.br>
  */
-
 bool Vec2Web::outputDXML() {
 
     DXMLPainter* painter= new DXMLPainter(outputFile);
@@ -211,6 +225,41 @@ bool Vec2Web::outputDXML() {
     return true;
 
 }
+
+
+
+/**
+ * Outputs a PS file from the graphic.
+ */
+bool Vec2Web::outputPS() {
+
+	QPrinter* printer;
+	printer = new QPrinter(QPrinter::HighResolution);
+	printer->setOutputToFile(true);
+	printer->setOutputFileName(outputFile);
+	printer->setPageSize(pageSize);
+	printer->setOrientation(orientation);
+	QPaintDeviceMetrics metr(printer);
+	
+    QG_Painter* painter = new QG_Painter(printer);
+    //painter.setBackgroundColor(RS_Color(255,255,255));
+    //painter.eraseRect(0,0, (int)maxSize.x, (int)maxSize.y);
+
+    //GraphicView gv((int)maxSize.x, (int)maxSize.y, painter);
+    GraphicView gv(metr.width(), metr.height(), painter);
+
+    gv.setContainer(&graphic);
+    gv.zoomAuto();
+    gv.drawEntity(&graphic, false, true);
+
+    // GraphicView deletes painter
+    painter->end();
+	//delete painter;
+	delete printer;
+
+    return true;
+}
+
 
 
 /**
