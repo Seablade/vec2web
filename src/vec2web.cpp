@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.15 2003/02/10 19:19:53 xiru Exp $
+**  $Id: vec2web.cpp,v 1.16 2003/02/10 23:22:31 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -52,6 +52,8 @@ Vec2Web::Vec2Web () {
     scaleUp = true;
     factor = 1.0;
     offset.set(0,0);
+
+    RS_SYSTEM->init("vec2web", "vec2web");
     RS_SYSTEM->init("vec2web", "vec2web");
 }
 
@@ -60,7 +62,7 @@ Vec2Web::Vec2Web () {
  * Converts inputFile to outputFile.
  */
 void Vec2Web::convert() {
-	
+
     // Read the DXF into graphic object
     RS_Import import(graphic);
     import.fileImport(inputFile);
@@ -73,19 +75,19 @@ void Vec2Web::convert() {
     }
 
     int len = strlen(outputFile);
-	int i=len-2;
-	while (i>0 && outputFile[i]!='.') {
-		--i;
-	}
+    int i=len-2;
+    while (i>0 && outputFile[i]!='.') {
+        --i;
+    }
 
-	char extension[16];
-	strncpy(extension, &outputFile[i+1], 15);
-	for (i=0; i<(int)strlen(extension); ++i) {
-		extension[i] = toupper(extension[i]);
-	}
+    char extension[16];
+    strncpy(extension, &outputFile[i+1], 15);
+    for (i=0; i<(int)strlen(extension); ++i) {
+        extension[i] = toupper(extension[i]);
+    }
 
-        output(extension);
-    
+    output(extension);
+
 }
 
 
@@ -100,10 +102,10 @@ bool Vec2Web::output(const char* format) {
 
     if (scaleUp || size.x>maxSize.x) {
         factor = maxSize.x / size.x;
-	}
+    }
     if (scaleUp || size.y>maxSize.y) {
         factor = min(maxSize.y / size.y, factor);
-	}
+    }
 
     size *= factor;
     size += RS_Vector(20,20);
@@ -125,23 +127,25 @@ bool Vec2Web::output(const char* format) {
  * Outputs a png image from the graphic.
  */
 bool Vec2Web::outputQt(const char* format) {
-	GraphicView gv((int)maxSize.x, (int)maxSize.y);
-	gv.setContainer(&graphic);
-	gv.zoomAuto();
-	gv.drawEntity(&graphic, false, true);
-	QPixmap* buffer = gv.getBuffer();
-	if (buffer!=NULL) {
-		QImageIO iio;
-		QImage img;
-		img = *buffer;
-		iio.setImage(img);
-		iio.setFileName(outputFile);
-		iio.setFormat(format);
+    GraphicView gv((int)maxSize.x, (int)maxSize.y);
+    gv.setContainer(&graphic);
+    gv.zoomAuto();
+    gv.drawEntity(&graphic, false, true);
+    QPixmap* buffer = gv.getBuffer();
+
+    if (buffer!=NULL) {
+        QImageIO iio;
+        QImage img;
+        img = *buffer;
+        iio.setImage(img);
+        iio.setFileName(outputFile);
+        iio.setFormat(format);
         if (iio.write()) {
-			return true;
-		}
-	}
-	return false;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 
@@ -153,8 +157,12 @@ bool Vec2Web::outputQt(const char* format) {
 
 unsigned short Vec2Web::swfw(const RS::LineWidth w) {
     unsigned short sw = (unsigned short) ( w / 2.4 );
-    if ( sw < 1 ) sw = 1;
-    if ( sw > 10 ) sw = 10;
+    if ( sw < 1 ) {
+        sw = 1;
+    }
+    if ( sw > 10 ) {
+        sw = 10;
+    }
     return sw;
 }
 
@@ -164,10 +172,9 @@ unsigned short Vec2Web::swfw(const RS::LineWidth w) {
  *
  * \author Fabiano Weimar dos Santos (Xiru) <fabiano@x3ng.com.br>
  */
-
 bool Vec2Web::outputMing(int compressLevel) {
-	
-#ifdef SWF_SUPPORT	
+
+#ifdef SWF_SUPPORT
 
     Ming_init();
 
@@ -176,114 +183,204 @@ bool Vec2Web::outputMing(int compressLevel) {
     movie->setDimension( (float)size.x, (float)size.y );
 
     movie->setBackground( (int)255, (int)255, (int)255 );   // White
-    
+
     for ( RS_Entity* e=graphic.firstEntity(); e!=0; e=graphic.nextEntity() ) {
 
-	SWFShape *shape = new SWFShape();
+        SWFShape *shape = new SWFShape();
 
-	//RS_Color c = e->getPen().getColor();
-        //shape->setLine( swfw(e->getPen().getWidth()), (int)c.red(), (int)c.green(), (int)c.blue() ); 
+        //RS_Color c = e->getPen().getColor();
+        //shape->setLine( swfw(e->getPen().getWidth()), (int)c.red(), (int)c.green(), (int)c.blue() );
         shape->setLine( 1, 0, 0, 0 );  // Debuging...
 
         switch ( e->rtti() ) {
-
         case RS::EntityPoint: {
-	        RS_Point* p = (RS_Point*)e;
-		shape->movePenTo( (float)transformX(p->getPos().x - 1),
-				  (float)transformY(p->getPos().y, true) );
-		shape->drawLineTo( (float)transformX(p->getPos().x + 1),
-				   (float)transformY(p->getPos().y, true) );
-		shape->movePenTo( (float)transformX(p->getPos().x),
-				  (float)transformY(p->getPos().y - 1, true) );
-		shape->drawLineTo( (float)transformX(p->getPos().x),
-				   (float)transformY(p->getPos().y + 1, true) );
-		movie->add( shape );
-	    }
-	    break;
-		
-        case RS::EntityLine: {
-                RS_Line* l = (RS_Line*)e;
-		shape->movePenTo( (float)transformX(l->getStartpoint().x),
-				  (float)transformY(l->getStartpoint().y, true) );
-		shape->drawLineTo( (float)transformX(l->getEndpoint().x),
-				   (float)transformY(l->getEndpoint().y, true) );
-		movie->add( shape );
+                RS_Point* p = (RS_Point*)e;
+                shape->movePenTo( (float)transformX(p->getPos().x - 1),
+                                  (float)transformY(p->getPos().y, true) );
+                shape->drawLineTo( (float)transformX(p->getPos().x + 1),
+                                   (float)transformY(p->getPos().y, true) );
+                shape->movePenTo( (float)transformX(p->getPos().x),
+                                  (float)transformY(p->getPos().y - 1, true) );
+                shape->drawLineTo( (float)transformX(p->getPos().x),
+                                   (float)transformY(p->getPos().y + 1, true) );
+                movie->add( shape );
             }
             break;
-         
-	case RS::EntityPolyline: {
-                 RS_Polyline* l = (RS_Polyline*)e;
-                 bool first = true;
-                 for ( RS_Entity* v=l->firstEntity(RS::ResolveNone); v!=NULL;
-                       v=l->nextEntity(RS::ResolveNone) ) {
-                     if (v->rtti()==RS::EntityLine) {
-                         RS_Line* l = (RS_Line*)v;
-                         if (first) {
-                              shape->movePenTo( (float)transformX(l->getStartpoint().x),
-                                                (float)transformY(l->getStartpoint().y, true) );
-                         } 
-                         shape->drawLineTo( (float)transformX(l->getEndpoint().x),
-                                            (float)transformY(l->getEndpoint().y, true) );
-                     } else if (v->rtti()==RS::EntityArc) {
-                         RS_Arc* a = (RS_Arc*)v;
-			 shape->movePenTo( (float)transformX(a->getCenter().x),
-			 		   (float)transformY(a->getCenter().y, true) );
-			 float a1, a2;
-			 a1 = a->isReversed() ? a->getAngle2() : a->getAngle1();
-			 a2 = a->isReversed() ? a->getAngle1() : a->getAngle2();
-			 a1 = (float)( ( M_PI * 2 - a1 ) * ARAD + 90 );
-			 a2 = (float)( ( M_PI * 2 - a2 ) * ARAD + 90 );
-			 if ( a2 > a1 ) a1 += 360;
-			 shape->drawArc( (float)transformD(a->getRadius()), a2, a1 ); 
-			 shape->movePenTo( (float)transformX(a->getEndpoint().x),
-			 		   (float)transformY(a->getEndpoint().y, true) );
-                     }
-                     first = false;
-                 }
-                 movie->add( shape );
-             }
-             break;
+
+        case RS::EntityLine: {
+                RS_Line* l = (RS_Line*)e;
+                shape->movePenTo( (float)transformX(l->getStartpoint().x),
+                                  (float)transformY(l->getStartpoint().y, true) );
+                shape->drawLineTo( (float)transformX(l->getEndpoint().x),
+                                   (float)transformY(l->getEndpoint().y, true) );
+                movie->add( shape );
+            }
+            break;
+
+        case RS::EntityPolyline: {
+                RS_Polyline* l = (RS_Polyline*)e;
+                bool first = true;
+                for ( RS_Entity* v=l->firstEntity(RS::ResolveNone); v!=NULL;
+                        v=l->nextEntity(RS::ResolveNone) ) {
+                    if (v->rtti()==RS::EntityLine) {
+                        RS_Line* l = (RS_Line*)v;
+                        if (first) {
+                            shape->movePenTo( (float)transformX(l->getStartpoint().x),
+                                              (float)transformY(l->getStartpoint().y, true) );
+                        }
+                        shape->drawLineTo( (float)transformX(l->getEndpoint().x),
+                                           (float)transformY(l->getEndpoint().y, true) );
+                    } else if (v->rtti()==RS::EntityArc) {
+                        RS_Arc* a = (RS_Arc*)v;
+                        shape->movePenTo( (float)transformX(a->getCenter().x),
+                                          (float)transformY(a->getCenter().y, true) );
+                        float a1, a2;
+                        a1 = a->isReversed() ? a->getAngle2() : a->getAngle1();
+                        a2 = a->isReversed() ? a->getAngle1() : a->getAngle2();
+                        a1 = (float)( ( M_PI * 2 - a1 ) * ARAD + 90 );
+                        a2 = (float)( ( M_PI * 2 - a2 ) * ARAD + 90 );
+                        if ( a2 > a1 )
+                            a1 += 360;
+                        shape->drawArc( (float)transformD(a->getRadius()), a2, a1 );
+                        shape->movePenTo( (float)transformX(a->getEndpoint().x),
+                                          (float)transformY(a->getEndpoint().y, true) );
+                    }
+                    first = false;
+                }
+                movie->add( shape );
+            }
+            break;
 
         case RS::EntityCircle: {
                 RS_Circle* c = (RS_Circle*)e;
-		shape->movePenTo( (float)transformX(c->getCenter().x),
-				  (float)transformY(c->getCenter().y, true) );
-		shape->drawCircle( (float)transformD(c->getRadius()) );
-		movie->add( shape );
+                shape->movePenTo( (float)transformX(c->getCenter().x),
+                                  (float)transformY(c->getCenter().y, true) );
+                shape->drawCircle( (float)transformD(c->getRadius()) );
+                movie->add( shape );
             }
             break;
 
         case RS::EntityArc: {
                 RS_Arc* a = (RS_Arc*)e;
-		shape->movePenTo( (float)transformX(a->getCenter().x),
-				  (float)transformY(a->getCenter().y, true) );
-		float a1, a2;
-		a1 = (float)( ( M_PI * 2 - a->getAngle1() ) * ARAD + 90 );
-		a2 = (float)( ( M_PI * 2 - a->getAngle2() ) * ARAD + 90 );
-		if ( a2 > a1 ) a1 += 360;
-		shape->drawArc( (float)transformD(a->getRadius()), a2, a1 );
-		movie->add( shape ); 
+                shape->movePenTo( (float)transformX(a->getCenter().x),
+                                  (float)transformY(a->getCenter().y, true) );
+                float a1, a2;
+                a1 = (float)( ( M_PI * 2 - a->getAngle1() ) * ARAD + 90 );
+                a2 = (float)( ( M_PI * 2 - a->getAngle2() ) * ARAD + 90 );
+                if ( a2 > a1 )
+                    a1 += 360;
+                shape->drawArc( (float)transformD(a->getRadius()), a2, a1 );
+                movie->add( shape );
             }
-	    break;
+            break;
 
         default:
             break;
         }
-		
+
     }
 
     movie->save(outputFile,compressLevel);
 
     return true;
-    
+
 #else
-    
+
     std::cerr << "No SWF Support compiled.\n";
     return false;
-	
 #endif
-	
+
 }
+
+
+/**
+ * Outputs the graphic into a format supported by the g2 library.
+ *
+ * \param handle The format handle of g2 created by a 2_open_* method.
+ *               e.g. int handle = g2_open_GIF("simple.gif", 100, 100);
+ */
+//bool Vec2Web::outputG2(const char* format) {
+/*
+   if (format!=F_GIF && format!=F_X11 && format!=F_PS && format!=F_WIN)
+       return false;
+*/
+
+/*
+   int handle = -1;			// handle which identifies the image for g2
+ 
+   switch (format) {
+   case F_GIF:
+       //handle = g2_open_GIF(outputFile, (int)size.x, (int)size.y);
+       break;
+ 
+   case F_PS:
+       handle = g2_open_PS(outputFile, g2_A4, g2_PS_land);
+       break;
+ 
+   case F_X11:
+       handle = g2_open_X11((int)size.x, (int)size.y);
+       break;
+ 
+   case F_WIN:
+       //handle = g2_open_win32((int)size.x, (int)size.y, outputFile, 0);
+       break;
+ 
+   default:
+       handle = -1;
+       break;
+   }
+ 
+   if (handle==-1)
+       return false;
+ 
+   for (RS_Entity* e=graphic.firstEntity(); e!=0; e=graphic.nextEntity()) {
+       switch (e->rtti()) {
+       case RS::EntityLine: {
+               RS_Line* l = (RS_Line*)e;
+ 
+               g2_line(handle,
+                       transformX(l->getStartpoint().x),
+                       transformY(l->getStartpoint().y),
+                       transformX(l->getEndpoint().x),
+                       transformY(l->getEndpoint().y));
+           }
+           break;
+ 
+       case RS::EntityArc: {
+               RS_Arc* a = (RS_Arc*)e;
+ 
+               g2_arc(handle,
+                      transformX(a->getCenter().x),
+                      transformY(a->getCenter().y),
+                      transformD(a->getRadius()),
+                      transformD(a->getRadius()),
+                      a->getAngle1()*ARAD, a->getAngle2()*ARAD);
+           }
+           break;
+ 
+       case RS::EntityCircle: {
+               RS_Circle* a = (RS_Circle*)e;
+ 
+               g2_ellipse(handle,
+                          transformX(a->getCenter().x),
+                          transformY(a->getCenter().y),
+                          transformD(a->getRadius()),
+                          transformD(a->getRadius()));
+           }
+           break;
+ 
+       default:
+           break;
+       }
+   }
+ 
+   if (format!=F_X11 && format!=F_WIN)
+       g2_close(handle);
+ 
+*/
+
+//    return true;
+//}
 
 
 /**
