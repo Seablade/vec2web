@@ -1,5 +1,5 @@
 import os
-path = '/x3ng/qcad2/vec2web/'
+path = '/home/www-data/qcad2/vec2web/'
 script = path + 'run_vec2web.sh'
 arq_input = path + 'test/polyline.dxf'
 arq_output = path + 'test/polyline.swf'
