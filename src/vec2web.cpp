@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.4 2002/06/05 17:06:31 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.5 2002/09/23 01:49:28 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -19,9 +19,12 @@
 ******************************************************************************/
 
 #include "vec2web.h"
+
 #include "dxflib/dl_creationinterface.h"
 #include "dxflib/dl_dxf.h"
+
 #include "qcadlib/rs_creation.h"
+#include "qcadlib/rs_color.h"
 #include "qcadlib/rs_graphic.h"
 #include "qcadlib/rs_import.h"
 
@@ -155,6 +158,12 @@ Vec2Web::outputGd(Format format) {
     black = gdImageColorAllocate(im, 0, 0, 0);
 
     for (RS_Entity* e=graphic.firstEntity(); e!=0; e = graphic.nextEntity()) {
+
+		// set color:
+		RS_Color rc = e->getPen().color();
+		int col = gdImageColorAllocate(im, 
+		            rc.red(), rc.green(), rc.blue());
+	
         switch (e->rtti()) {
         case RS_Entity::RS_ENTITY_LINE: {
                 RS_Line* l = (RS_Line*)e;
@@ -163,7 +172,7 @@ Vec2Web::outputGd(Format format) {
                             (int)transformY(l->getStartpoint().y, true),
                             (int)transformX(l->getEndpoint().x),
                             (int)transformY(l->getEndpoint().y, true),
-                            black);
+                            col);
             }
             break;
 
@@ -177,7 +186,7 @@ Vec2Web::outputGd(Format format) {
                            (int)transformD(a->getRadius() * 2),
                            (int)(360 - a->getAngle2()),
                            (int)(360 - a->getAngle1()),
-                           black);
+                           col);
             }
             break;
 
@@ -190,7 +199,7 @@ Vec2Web::outputGd(Format format) {
                            (int)transformD(c->getRadius() * 2),
                            (int)transformD(c->getRadius() * 2),
                            0, 360,
-                           black);
+                           col);
             }
             break;
 
@@ -304,8 +313,10 @@ Vec2Web::outputG2(Format format) {
                 RS_Arc* a = (RS_Arc*)e;
 
                 g2_arc(handle,
-                       transformX(a->getCenter().x), transformY(a->getCenter().y),
-                       transformD(a->getRadius()), transformD(a->getRadius()),
+                       transformX(a->getCenter().x), 
+					   transformY(a->getCenter().y),
+                       transformD(a->getRadius()), 
+					   transformD(a->getRadius()),
                        a->getAngle1(), a->getAngle2());
             }
             break;
@@ -314,8 +325,10 @@ Vec2Web::outputG2(Format format) {
                 RS_Circle* a = (RS_Circle*)e;
 
                 g2_ellipse(handle,
-                           transformX(a->getCenter().x), transformY(a->getCenter().y),
-                           transformD(a->getRadius()), transformD(a->getRadius()) );
+                           transformX(a->getCenter().x), 
+						   transformY(a->getCenter().y),
+                           transformD(a->getRadius()), 
+						   transformD(a->getRadius()));
             }
             break;
 
