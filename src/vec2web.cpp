@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.19 2003/02/11 19:05:48 xiru Exp $
+**  $Id: vec2web.cpp,v 1.20 2003/02/11 20:00:16 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -52,8 +52,6 @@ Vec2Web::Vec2Web () {
     scaleUp = true;
     factor = 1.0;
     offset.set(0,0);
-
-    RS_SYSTEM->init("vec2web", "vec2web");
     RS_SYSTEM->init("vec2web", "vec2web");
 }
 
@@ -219,6 +217,9 @@ bool Vec2Web::outputMing(int compressLevel) {
             }
             break;
 
+	case RS::EntityDimAligned: 
+	case RS::EntityDimLinear: 
+	case RS::EntityText: 
         case RS::EntityPolyline: {
                 RS_Polyline* l = (RS_Polyline*)e;
                 bool first = true;
@@ -294,96 +295,6 @@ bool Vec2Web::outputMing(int compressLevel) {
 #endif
 
 }
-
-
-/**
- * Outputs the graphic into a format supported by the g2 library.
- *
- * \param handle The format handle of g2 created by a 2_open_* method.
- *               e.g. int handle = g2_open_GIF("simple.gif", 100, 100);
- */
-//bool Vec2Web::outputG2(const char* format) {
-/*
-   if (format!=F_GIF && format!=F_X11 && format!=F_PS && format!=F_WIN)
-       return false;
-*/
-
-/*
-   int handle = -1;			// handle which identifies the image for g2
- 
-   switch (format) {
-   case F_GIF:
-       //handle = g2_open_GIF(outputFile, (int)size.x, (int)size.y);
-       break;
- 
-   case F_PS:
-       handle = g2_open_PS(outputFile, g2_A4, g2_PS_land);
-       break;
- 
-   case F_X11:
-       handle = g2_open_X11((int)size.x, (int)size.y);
-       break;
- 
-   case F_WIN:
-       //handle = g2_open_win32((int)size.x, (int)size.y, outputFile, 0);
-       break;
- 
-   default:
-       handle = -1;
-       break;
-   }
- 
-   if (handle==-1)
-       return false;
- 
-   for (RS_Entity* e=graphic.firstEntity(); e!=0; e=graphic.nextEntity()) {
-       switch (e->rtti()) {
-       case RS::EntityLine: {
-               RS_Line* l = (RS_Line*)e;
- 
-               g2_line(handle,
-                       transformX(l->getStartpoint().x),
-                       transformY(l->getStartpoint().y),
-                       transformX(l->getEndpoint().x),
-                       transformY(l->getEndpoint().y));
-           }
-           break;
- 
-       case RS::EntityArc: {
-               RS_Arc* a = (RS_Arc*)e;
- 
-               g2_arc(handle,
-                      transformX(a->getCenter().x),
-                      transformY(a->getCenter().y),
-                      transformD(a->getRadius()),
-                      transformD(a->getRadius()),
-                      a->getAngle1()*ARAD, a->getAngle2()*ARAD);
-           }
-           break;
- 
-       case RS::EntityCircle: {
-               RS_Circle* a = (RS_Circle*)e;
- 
-               g2_ellipse(handle,
-                          transformX(a->getCenter().x),
-                          transformY(a->getCenter().y),
-                          transformD(a->getRadius()),
-                          transformD(a->getRadius()));
-           }
-           break;
- 
-       default:
-           break;
-       }
-   }
- 
-   if (format!=F_X11 && format!=F_WIN)
-       g2_close(handle);
- 
-*/
-
-//    return true;
-//}
 
 
 /**
