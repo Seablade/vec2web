@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: dxmlpainter.cpp,v 1.3 2003/02/25 14:08:57 xiru Exp $
+**  $Id: dxmlpainter.cpp,v 1.4 2003/02/26 12:55:33 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -93,8 +93,8 @@ void DXMLPainter::drawArc(double cx, double cy, double radius,
                          double a1, double a2,
                          bool reversed) {
     float ang1, ang2;
-    ang1 = (float)( (M_PI * 2 - a1) * ARAD + 90 );
-    ang2 = (float)( (M_PI * 2 - a2) * ARAD + 90 );
+    ang1 = (float)( (M_PI * 2 - a1) * ARAD );
+    ang2 = (float)( (M_PI * 2 - a2) * ARAD );
     if (reversed) {
         if (ang1 > ang2) {
             ang2 += 360;
