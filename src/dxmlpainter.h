@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: dxmlpainter.h,v 1.2 2003/02/20 16:05:12 xiru Exp $
+**  $Id: dxmlpainter.h,v 1.3 2003/02/27 17:11:20 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -44,7 +44,7 @@ public:
     virtual void drawArc(double cx, double cy, double radius,
                          double a1, double a2,
                          bool reversed);
-    virtual void drawCircle(double cx, double cy, double radius);
+    virtual void drawCircle(double cx, double cy, double radius) {}
     virtual void drawEllipse(double cx, double cy,
                              double radius1, double radius2,
                              double angle,

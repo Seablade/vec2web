@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: dxmlpainter.cpp,v 1.5 2003/02/26 14:04:44 xiru Exp $
+**  $Id: dxmlpainter.cpp,v 1.6 2003/02/27 17:11:20 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -108,17 +108,6 @@ void DXMLPainter::drawArc(double cx, double cy, double radius,
         fprintf(dxml, "  <arc x=\"%f\" y=\"%f\" radius=\"%f\" angle1=\"%f\" angle2=\"%f\" />\n",
         (float)cx, (float)cy, (float)radius, ang2, ang1);
     }
-}
-
-
-/**
- * Draws a circle.
- * @param cx center in x
- * @param cy center in y
- * @param radius Radius
- */
-void DXMLPainter::drawCircle(double cx, double cy, double radius) {
-    fprintf(dxml, "  <circle x=\"%f\" y=\"%f\" radius=\"%f\" />\n", (float)cx, (float)cy, (float)radius);
 }
 
 

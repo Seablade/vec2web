@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.cpp,v 1.6 2003/02/20 16:05:14 xiru Exp $
+**  $Id: swfpainter.cpp,v 1.7 2003/02/27 17:11:21 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -115,21 +115,6 @@ void SWFPainter::drawArc(double cx, double cy, double radius,
         }
         shape->drawArc((float)radius, ang2, ang1);
     }
-    movie->add(shape);
-}
-
-
-/**
- * Draws a circle.
- * @param cx center in x
- * @param cy center in y
- * @param radius Radius
- */
-void SWFPainter::drawCircle(double cx, double cy, double radius) {
-    SWFShape *shape = new SWFShape();
-    shape->setLine(width,colr,colg,colb);
-    shape->movePenTo((float)cx, (float)cy);
-    shape->drawCircle((float)radius);
     movie->add(shape);
 }
 
