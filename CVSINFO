@@ -1,0 +1,22 @@
+vec2web - CVSINFO
+
+
+This file tells you how to check out source anonymously through pserver
+
+Change into the directory where you want to create the vec2web directory tree
+
+Type the following:
+
+	cvs -d:pserver:anonymous@cvs.vec2web.sourceforge.net:/cvsroot/vec2web login
+
+If it asks you for a password, just type enter.
+
+After anonymously logging in:
+
+	cvs -d:pserver:anonymous@cvs.vec2web.sourceforge.net:/cvsroot/vec2web co vec2web
+
+After initial checkout, you can change into this directory and execute cvs commands 
+without the -d tag. For example:
+
+	cvs update
+

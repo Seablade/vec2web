@@ -1,0 +1,9 @@
+vec2web - changes
+
+
+0.0.1 (30.09.2000)
+------------------
+- created CHANGES file
+- Support for reading DXF
+- Support for writing PNG, PS, WBMP
+- Viewing DXF files in X11 or Win

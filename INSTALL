@@ -1,0 +1,32 @@
+vec2web - Installation
+
+
+LINUX
+-----
+
+Compile as described in the UNIX section 
+
+UNIX 
+----
+
+1. Extract package with gzip -dc vec2web-xxxx.tar.gz | tar xvf - 
+
+2. Run './configure'
+
+3. Optionally run 'make depend'
+
+4. Run 'make' 
+
+5. Run 'make install'. 
+
+6. Optional: run 'make demo' to compile the demo application
+
+
+WINDOWS XX
+----------
+
+1. Extract package: unzip 'vec2web-xxxx.zip' 
+
+2. Users of gcc or other commandline based compilers with make support
+   continue as in Unix example 
+
