@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.h,v 1.9 2003/02/28 19:05:01 andrew23 Exp $
+**  $Id: vec2web.h,v 1.10 2003/03/04 12:44:49 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -28,7 +28,7 @@
 
 
 /**
- * Class for converting between formats or showing a file in a window.
+ * Class for converting vector formats into bitmaps.
  */
 class Vec2Web {
 public:
