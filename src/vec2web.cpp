@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.18 2003/02/11 18:34:25 xiru Exp $
+**  $Id: vec2web.cpp,v 1.19 2003/02/11 19:05:48 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -249,12 +249,6 @@ bool Vec2Web::outputMing(int compressLevel) {
                     }
                     first = false;
                 }
-		if ( (! first) && l->isClosed() ) {
-                    shape->movePenTo( (float)transformX(l->getStartpoint().x),
-                                      (float)transformY(l->getStartpoint().y, true) );
-                    shape->drawLine( (float)transformX(l->getEndpoint().x),
-                                     (float)transformY(l->getEndpoint().y, true) );
-		}
                 movie->add( shape );
             }
             break;
