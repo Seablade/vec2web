@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: main.cpp,v 1.11 2003/09/02 20:31:10 andrew23 Exp $
+**  $Id: main.cpp,v 1.12 2003/09/24 22:58:45 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -116,6 +116,7 @@ int main(int argc, char** argv) {
 
         QApplication a(argc, argv);
 
+    	RS_DEBUG->setLevel(RS_Debug::D_WARNING);
     	RS_SYSTEM->init(VW_APPNAME, VW_VERSION, VW_DIRNAME);
         RS_FONTLIST->init();
         RS_PATTERNLIST->init();
