@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.cpp,v 1.4 2003/02/13 22:38:46 xiru Exp $
+**  $Id: swfpainter.cpp,v 1.5 2003/02/13 23:03:57 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -19,9 +19,7 @@
 ******************************************************************************/
 
 #include <stdio.h>
-
 #include "swfpainter.h"
-
 #include "rs_math.h"
 #include "rs_color.h"
 
@@ -133,6 +131,11 @@ void SWFPainter::drawCircle(double cx, double cy, double radius) {
     shape->movePenTo((float)cx, (float)cy);
     shape->drawCircle((float)radius);
     movie->add(shape);
+}
+
+
+RS_Pen SWFPainter::getPen() {
+    return RS_Pen(RS_Color(colr,colg,colb), RS::Width01, RS::SolidLine);
 }
 
 
