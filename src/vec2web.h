@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.h,v 1.5 2002/11/21 16:09:24 xiru Exp $
+**  $Id: vec2web.h,v 1.6 2003/02/12 00:07:41 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -49,7 +49,7 @@ public:
     bool output(const char* format);
     bool outputQt(const char* format);
     bool outputMing(int compressLevel=9);
-    //bool outputG2(const char* format);
+    bool outputDXML();
 
     double transformX(double x);
     double transformY(double y, bool swap=false);

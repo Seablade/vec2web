@@ -12,6 +12,7 @@ rm -f test/*.mng
 rm -f test/*.bmp
 rm -f test/*.ps
 rm -f test/*.wbmp
+rm -f test/*.dxml
 
 for inputFile in `find ./test -name "*.dxf"`
 do
@@ -27,8 +28,9 @@ do
 	#./vec2web $inputFile $outputFile.pnm -x 800 -y 600
 	#./vec2web $inputFile $outputFile.mng -x 800 -y 600
 	./vec2web $inputFile $outputFile.bmp -x 800 -y 600
-	#./vec2web $inputFile $outputFile.ps
-	#./vec2web $inputFile $outputFile.wbmp
+	#./vec2web $inputFile $outputFile.ps -x 800 -y 600
+	#./vec2web $inputFile $outputFile.wbmp -x 800 -y 600
+	./vec2web $inputFile $outputFile.dxml -x 800 -y 600
 done
 
 rm debug_*.log
