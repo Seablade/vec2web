@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.h,v 1.11 2003/04/22 12:08:57 andrew23 Exp $
+**  $Id: vec2web.h,v 1.12 2003/09/02 20:31:10 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies

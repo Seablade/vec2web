@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: graphicview.cpp,v 1.4 2003/05/12 21:27:03 andrew23 Exp $
+**  $Id: graphicview.cpp,v 1.5 2003/09/02 20:31:10 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun

@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.34 2003/05/12 21:27:03 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.35 2003/09/02 20:31:10 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -34,10 +34,10 @@
 #include "rs_import.h"
 #include "rs_system.h"
 #include "rs_painterqt.h"
+#include "rs_staticgraphicview.h"
 #include "rs.h"
 
 #include "dxmlpainter.h"
-#include "graphicview.h"
 #ifdef SWF_SUPPORT
 #include "swfpainter.h"
 #endif
@@ -69,8 +69,8 @@ void Vec2Web::convert() {
     // preprocessing:
     if (blackWhite) {
         RS_Color black(0,0,0);
-        for (RS_Entity* e=graphic.firstEntity();
-                e!=NULL; e=graphic.nextEntity()) {
+        for (RS_Entity* e=graphic.firstEntity(RS2::ResolveAll);
+                e!=NULL; e=graphic.nextEntity(RS2::ResolveAll)) {
 
             RS_Pen pen = e->getPen();
             pen.setColor(black);
@@ -148,7 +148,7 @@ bool Vec2Web::outputQt(const char* format) {
     painter->setBackgroundColor(RS_Color(255,255,255));
     painter->eraseRect(0,0, (int)maxSize.x, (int)maxSize.y);
 
-    GraphicView gv((int)maxSize.x, (int)maxSize.y, painter);
+    RS_StaticGraphicView gv((int)maxSize.x, (int)maxSize.y, painter);
     gv.setContainer(&graphic);
     gv.zoomAuto(false);
     gv.drawEntity(&graphic, false, true);
@@ -182,12 +182,12 @@ bool Vec2Web::outputMing(int compressLevel) {
     movie->setBackground((int)255, (int)255, (int)255);   // White
 
     SWFPainter* painter= new SWFPainter(movie);
-    GraphicView gv((int)maxSize.x, (int)maxSize.y, painter);
+    RS_StaticGraphicView gv((int)maxSize.x, (int)maxSize.y, painter);
     gv.setContainer(&graphic);
-    gv.zoomAuto();
+    gv.zoomAuto(false);
     gv.drawEntity(&graphic, false, true);
 
-    movie->save(outputFile, compressLevel);
+    movie->save(outputFile, 0); //compressLevel);
 
     return true;
 
@@ -219,9 +219,9 @@ bool Vec2Web::outputMing(int compressLevel) {
 bool Vec2Web::outputDXML() {
 
     DXMLPainter* painter= new DXMLPainter(outputFile);
-    GraphicView gv((int)maxSize.x, (int)maxSize.y, painter);
+    RS_StaticGraphicView gv((int)maxSize.x, (int)maxSize.y, painter);
     gv.setContainer(&graphic);
-    gv.zoomAuto();
+    gv.zoomAuto(false);
     gv.drawEntity(&graphic, false, true);
 
     return true;
@@ -248,10 +248,10 @@ bool Vec2Web::outputPS() {
     //painter.eraseRect(0,0, (int)maxSize.x, (int)maxSize.y);
 
     //GraphicView gv((int)maxSize.x, (int)maxSize.y, painter);
-    GraphicView gv(metr.width(), metr.height(), painter);
+    RS_StaticGraphicView gv(metr.width(), metr.height(), painter);
 
     gv.setContainer(&graphic);
-    gv.zoomAuto();
+    gv.zoomAuto(false);
     gv.drawEntity(&graphic, false, true);
 
     // GraphicView deletes painter

@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.cpp,v 1.13 2003/05/18 00:08:40 andrew23 Exp $
+**  $Id: swfpainter.cpp,v 1.14 2003/09/02 20:31:10 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun

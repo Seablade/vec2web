@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: graphicview.h,v 1.12 2003/05/18 00:08:40 andrew23 Exp $
+**  $Id: graphicview.h,v 1.13 2003/09/02 20:31:10 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -58,64 +58,6 @@ public:
     virtual void setMouseCursor(RS2::CursorType ) {}
 
     virtual void emulateMouseMoveEvent() {}
-
-    virtual void requestWarningDialog(const RS_String& ) {}
-    virtual void requestPreviousMenu() {}
-    virtual RS_Layer* requestNewLayerDialog() {
-        return NULL;
-    }
-    virtual RS_Layer* requestLayerRemovalDialog(RS_LayerList* = NULL) {
-        return NULL;
-    }
-    virtual RS_Layer* requestEditLayerDialog(RS_LayerList* ) {
-        return NULL;
-    }
-    virtual RS_String requestFileSaveAsDialog() {
-        return "";
-    }
-    virtual RS_String requestFileOpenDialog() {
-        return "";
-    }
-    virtual void requestDimensionOptions(RS_DimensionData& , bool ) {}
-    virtual void requestDimLinearOptions(RS_DimLinearData& , bool ) {}
-    virtual void requestArcOptions(RS_ArcData& , bool) {}
-    virtual void requestCircleOptions(RS_CircleData&, bool) {}
-    virtual void requestSnapDistOptions(double&, bool) {}
-    virtual void requestLineParallelOptions(double& , bool ) {}
-    virtual void requestLineAngleOptions(double& , bool ) {}
-    virtual void requestLineBisectorOptions(double& , bool ) {}
-    virtual void requestToolBar(RS2::ToolBarId) {}
-    virtual void requestToolBarSelect(RS2::ActionType ) {}
-    virtual RS_Block* requestNewBlockDialog() {
-        return NULL;
-    }
-	virtual RS_Block* requestBlockAttributesDialog(RS_BlockList* = 0) {
-        return NULL;
-	}
-    virtual RS_Block* requestBlockRemovalDialog(
-        RS_BlockList* = NULL) {
-        return NULL;
-    }
-    virtual void requestEditBlockWindow(RS_BlockList* = NULL) {}
-    virtual bool requestMoveDialog(RS_MoveData& ) {
-        return false;
-    }
-    virtual bool requestRotateDialog(RS_RotateData& ) {
-        return false;
-    }
-    virtual bool requestScaleDialog(RS_ScaleData& ) {
-        return false;
-    }
-    virtual void requestModifyEntityDialog(RS_Entity* ) {}
-    virtual bool requestTextDialog(RS_Text*) {
-        return false;
-    }
-
-    virtual void updateCoordinateWidget(const RS_Vector& ,
-                                        const RS_Vector& ) {}
-    virtual void updateMouseWidget(const RS_String& ,
-                                   const RS_String& ) {}
-
 
     void paint();
 
