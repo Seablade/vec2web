@@ -20,12 +20,12 @@ do
 	echo "Output: $outputFile"
 	./vec2web $inputFile $outputFile.swf -x 800 -y 600
 	./vec2web $inputFile $outputFile.png -x 800 -y 600
-	./vec2web $inputFile $outputFile.gif -x 800 -y 600
+	#./vec2web $inputFile $outputFile.gif -x 800 -y 600
 	./vec2web $inputFile $outputFile.jpeg -x 800 -y 600
 	./vec2web $inputFile $outputFile.xbm -x 800 -y 600
 	./vec2web $inputFile $outputFile.xpm -x 800 -y 600
-	./vec2web $inputFile $outputFile.pnm -x 800 -y 600
-	./vec2web $inputFile $outputFile.mng -x 800 -y 600
+	#./vec2web $inputFile $outputFile.pnm -x 800 -y 600
+	#./vec2web $inputFile $outputFile.mng -x 800 -y 600
 	./vec2web $inputFile $outputFile.bmp -x 800 -y 600
 	#./vec2web $inputFile $outputFile.ps
 	#./vec2web $inputFile $outputFile.wbmp
