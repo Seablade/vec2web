@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: main.cpp,v 1.3 2002/11/10 15:07:41 andrew23 Exp $
+**  $Id: main.cpp,v 1.4 2002/11/10 15:09:13 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -75,13 +75,13 @@ int main(int argc, char** argv) {
 
 
 void usage () {
-    std::cout << "\nUsage: vec2web input.dxf [output.png|output.ps|output.wbmp] [options]\n";
+    std::cout << "\nUsage: vec2web input.dxf [output.png|output.bmp] [options]\n";
     std::cout << "Where options are:\n";
     std::cout << "\t-x #  maximum x size for the output bitmap\n";
     std::cout << "\t-y #  maximum y size for the output bitmap\n\n";
 
-    std::cout << "e.g. vec2web drawing.dxf\n";
-    std::cout << "\tshows the drawing in X11 or Win\n";
+    //std::cout << "e.g. vec2web drawing.dxf\n";
+    //std::cout << "\tshows the drawing in X11 or Win\n";
     std::cout << "e.g. vec2web drawing.dxf drawing.png\n";
     std::cout << "\tconverts drawing.dxf to a portable network graphic (PNG)\n\n";
 }
