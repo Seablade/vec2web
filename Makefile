@@ -8,7 +8,7 @@ VERSION = 0.0.1
 
 OBJF =    src/main.o \
           src/vec2web.o
-EXTERN_LIBS = -L/usr/local/lib -lg2 -L$(HOME)/local/lib -ldxflib -lgd -lpng -lz -lm -L/usr/X11R6/lib -lX11
+EXTERN_LIBS = -L$(HOME)/local/lib -ldxflib -L/usr/local/lib -lg2 -lgd -lpng -lz -lm -L/usr/X11R6/lib -lX11
 INCLUDES = -I$(HOME)/local/include
 
 all: vec2web

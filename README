@@ -21,6 +21,13 @@ vec2web can also convert DXF drawings to PS (post script) and WBMP
 (wireless bitmap) or display them in an X11 or Windows window.
 
 
+Dependencies
+============
+libdxf
+libgd 1.8.3
+libg2 0.4
+
+
 CONTACT
 =======
 
