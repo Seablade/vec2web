@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.33 2003/05/12 20:06:49 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.34 2003/05/12 21:27:03 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -20,7 +20,7 @@
 
 #include "vec2web.h"
 
-#include <ctype.h>
+//#include <ctype.h>
 
 #include <qimage.h>
 #include <qpaintdevicemetrics.h>
@@ -172,6 +172,9 @@ bool Vec2Web::outputQt(const char* format) {
 
 
 bool Vec2Web::outputMing(int compressLevel) {
+
+#ifdef SWF_SUPPORT
+
     Ming_init();
 
     SWFMovie *movie = new SWFMovie();
