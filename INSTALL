@@ -1,6 +1,11 @@
 vec2web - Installation
 
 
+Please note that vec2web requires the following libraries:
+dxflib (http://dxflib.sourceforge.net)
+gd (http://www.boutell.com/gd)
+g2 (http://g2.sourceforge.net)
+
 LINUX
 -----
 

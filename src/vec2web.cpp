@@ -1,4 +1,6 @@
 /*****************************************************************************
+**  $Id: vec2web.cpp,v 1.3 2001/10/21 13:46:15 andrew23 Exp $
+**
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
 **
@@ -17,29 +19,31 @@
 ******************************************************************************/
 
 #include "vec2web.h"
-#include "dxflib/dl_entity.h"
+#include "dxflib/dl_creationinterface.h"
 #include "dxflib/dl_dxf.h"
+#include "qcadlib/rs_creation.h"
+#include "qcadlib/rs_graphic.h"
+#include "qcadlib/rs_import.h"
 
 extern "C" {
-	#include <gd.h>
-	#include <gdfontl.h>
-	#include <g2.h>
-	#include <g2_PS.h>
-	#include <g2_X11.h>
+#include <gd.h>
+#include <gdfontl.h>
+#include <g2.h>
+#include <g2_PS.h>
+#include <g2_X11.h>
 }
 
 /**
  * Default constructor.
  */
-Vec2Web::Vec2Web ()
-{
-	strcpy (inputFile, "");
-	strcpy (outputFile, "");
-	maxSize.set (200,200);
-	size.set (200,200);
-	scaleUp = true;
-	factor = 1.0;
-	offset.set (0,0);
+Vec2Web::Vec2Web () {
+    strcpy(inputFile, "");
+    strcpy(outputFile, "");
+    maxSize.set(200,200);
+    size.set(200,200);
+    scaleUp = true;
+    factor = 1.0;
+    offset.set(0,0);
 }
 
 
@@ -47,79 +51,82 @@ Vec2Web::Vec2Web ()
  * Converts inputFile to outputFile.
  */
 void
-Vec2Web::convert ()
-{
-	// Read the DXF into graphic object
-	DL_Dxf::in (inputFile, &graphic);
-	//std::cout << graphic;
-	
-	// View in x11 if no outputfile was given.
-	if (strlen(outputFile)==0) {
-		output (F_X11);
-		getchar ();
-		return;
-	}
-	
-	int len = strlen(outputFile);
-	
-	if (len<4) {	
-		std::cout << "Can't find out file type of output file... please specify!";
-	}
-	else {
-		if (len>4 && !strcmp(&outputFile[len-4], "wbmp")) {
-			output (F_WBMP);
-		}
-		else if (len>3 && !strcmp(&outputFile[len-3], "png")) {
-			output (F_PNG);
-		}
-		else if (len>2 && !strcmp(&outputFile[len-2], "ps")) {
-			output (F_PS);
-		}
-	}
+Vec2Web::convert() {
+    // Read the DXF into graphic object
+    RS_Import import(graphic);
+
+    import.fileImport(inputFile);
+
+	//cout << graphic;
+	//getchar();
+
+    // View in x11 if no outputfile was given.
+    if (strlen(outputFile)==0) {
+        output(F_X11);
+        getchar();
+        return;
+    }
+
+    int len = strlen(outputFile);
+
+    if (len<4) {
+        std::cout << "Can't find out file type of output file... please specify!";
+    } else {
+        if (len>4 && !strcmp(&outputFile[len-4], "wbmp")) {
+            output(F_WBMP);
+        } else if (len>4 && !strcmp(&outputFile[len-4], "jpeg")) {
+            output(F_JPEG);
+        } else if (len>3 && !strcmp(&outputFile[len-3], "png")) {
+            output(F_PNG);
+        } else if (len>3 && !strcmp(&outputFile[len-3], "jpg")) {
+			output(F_JPEG);
+		} else if (len>2 && !strcmp(&outputFile[len-2], "ps")) {
+            output(F_PS);
+        }
+    }
 }
 
 
 /**
  * Outputs an image from the graphic in the format descibed by 'format'.
  */
-bool 
-Vec2Web::output (Format format)
-{
-	bool ret=true;
+bool
+Vec2Web::output(Format format) {
+    bool ret=true;
 
-	size.set ( graphic.getMax().x - graphic.getMin().x,
-	           graphic.getMax().y - graphic.getMin().y );
-			
-	if (scaleUp || size.x>maxSize.x) 
-		factor = maxSize.x / size.x;
-	if (scaleUp || size.y>maxSize.y) 
-		factor = min (maxSize.y / size.y, factor);
-					
-	size *= factor;
-	size += DL_Vector (20,20);
-	
-	offset.set ( 10 - (int)(graphic.getMin().x * factor),
-	             10 - (int)(graphic.getMin().y * factor) );
+    size.set(graphic.getMax().x - graphic.getMin().x,
+             graphic.getMax().y - graphic.getMin().y);
 
-	switch (format) {
-		case F_PNG:
-		case F_JPEG:
-		case F_WBMP:
-			outputGd (format);
-			break;
-			
-		case F_PS:
-		case F_X11:
-		case F_WIN:
-			outputG2 (format);
-			break;
-		
-		default:
-			ret = false;
-			break;
-	}
-	
-	return ret;
+    if (scaleUp || size.x>maxSize.x)
+        factor = maxSize.x / size.x;
+    if (scaleUp || size.y>maxSize.y)
+        factor = min(maxSize.y / size.y, factor);
+
+    size *= factor;
+    size += RS_Vector(20,20);
+
+    offset.set(10 - (int)(graphic.getMin().x * factor),
+               10 - (int)(graphic.getMin().y * factor));
+
+    switch (format) {
+    case F_PNG:
+    case F_JPEG:
+    case F_WBMP:
+        outputGd(format);
+        break;
+
+    case F_PS:
+    case F_X11:
+    case F_WIN:
+        outputG2(format);
+        break;
+
+    default:
+        ret = false;
+        break;
+    }
+
+    return ret;
 }
 
 
@@ -127,114 +134,118 @@ Vec2Web::output (Format format)
  * Outputs a png image from the graphic.
  */
 bool
-Vec2Web::outputGd (Format format)
-{
-	if (format!=F_PNG && format!=F_JPEG && format!=F_WBMP) return false;
+Vec2Web::outputGd(Format format) {
+    if (format!=F_PNG && format!=F_JPEG && format!=F_WBMP)
+        return false;
 
-	// Declare the image
-	gdImagePtr im;
-	// Declare output files
-	FILE *fp;
-	// Declare color indexes
-	int black;
-	int white;
-	
-	// Allocate the image:
-	im = gdImageCreate ((int)size.x, (int)size.y);
-	
-	// Allocate the colors.
-	// The first color in a new image will be the background color.
-	white = gdImageColorAllocate(im, 255, 255, 255);
-	black = gdImageColorAllocate(im, 0, 0, 0);
-	
-	for (DL_Entity* e = graphic.firstSingle(); e != 0; e = graphic.nextSingle())
-	{
-		switch (e->rtti ()) {
-			case DL_ENTITY_LINE:
-				gdImageLine (im, 
-				             (int)transformX (e->getStartPoint().x),
-										 (int)transformY (e->getStartPoint().y, true),
-										 (int)transformX (e->getEndPoint().x),
-										 (int)transformY (e->getEndPoint().y, true),
-										 black);
-				break;
+    // Declare the image
+    gdImagePtr im;
+    // Declare output files
+    FILE *fp;
+    // Declare color indexes
+    int black;
+    int white;
 
-			case DL_ENTITY_ARC: {
-				DL_Arc* a = (DL_Arc*)e;
-				
-				gdImageArc (im,
-				            (int)transformX (a->getCenter().x),
-										(int)transformY (a->getCenter().y, true),
-										(int)transformD (a->getRadius() * 2),
-										(int)transformD (a->getRadius() * 2),
-										(int)(360 - a->getAngle2()),
-										(int)(360 - a->getAngle1()),
-										black);
-				} break;
-				
-			case DL_ENTITY_CIRCLE: {
-				DL_Circle* c = (DL_Circle*)e;
-				
-				gdImageArc (im,
-				            (int)transformX (c->getCenter().x),
-										(int)transformY (c->getCenter().y, true),
-										(int)transformD (c->getRadius() * 2),
-										(int)transformD (c->getRadius() * 2),
-										0, 360,
-										black);
-				} break;
-				
-			case DL_ENTITY_TEXT: {
-				/*
-				DL_Text* t = (DL_Text*)e;
-				
-				int brect[8];
-				gdImageStringTTF (im,
-				                  brect,
-				                  black,
-				                  "arial.ttf",
-				                  transformD (t->getHeight ()),
-				                  t->getAngle (),
-				                  (int)transformX (t->getStartPoint ().x),
-				                  (int)transformY (t->getStartPoint ().y),
-				                  t->getText ());
-				*/
-				} break;
-				
-			default:
-				break;
-		}
-		
-	}
-	
-	// Open a file for writing.
-	fp = fopen(outputFile, "wb");
+    // Allocate the image:
+    im = gdImageCreate((int)size.x, (int)size.y);
 
-	// Output the image to the disk file in the given format.
-	switch (format) {
-		case F_PNG:
-			gdImagePng (im, fp);
-			break;
-			
-		case F_JPEG:
-			//gdImageJpeg (im, fp, -1);
-			break;
-			
-		case F_WBMP:
-			gdImageWBMP (im, black, fp);
-			break;
-			
-		default:
-			break;
-	}
+    // Allocate the colors.
+    // The first color in a new image will be the background color.
+    white = gdImageColorAllocate(im, 255, 255, 255);
+    black = gdImageColorAllocate(im, 0, 0, 0);
 
-	// Close the file
-	fclose (fp);
+    for (RS_Entity* e=graphic.firstEntity(); e!=0; e = graphic.nextEntity()) {
+        switch (e->rtti()) {
+        case RS_ENTITY_LINE: {
+                RS_Line* l = (RS_Line*)e;
+                gdImageLine(im,
+                            (int)transformX(l->getStartPoint().x),
+                            (int)transformY(l->getStartPoint().y, true),
+                            (int)transformX(l->getEndPoint().x),
+                            (int)transformY(l->getEndPoint().y, true),
+                            black);
+            }
+            break;
 
-	// Destroy the image in memory
-	gdImageDestroy (im);
+        case RS_ENTITY_ARC: {
+                RS_Arc* a = (RS_Arc*)e;
 
-	return true;
+                gdImageArc(im,
+                           (int)transformX(a->getCenter().x),
+                           (int)transformY(a->getCenter().y, true),
+                           (int)transformD(a->getRadius() * 2),
+                           (int)transformD(a->getRadius() * 2),
+                           (int)(360 - a->getAngle2()),
+                           (int)(360 - a->getAngle1()),
+                           black);
+            }
+            break;
+
+        case RS_ENTITY_CIRCLE: {
+                RS_Circle* c = (RS_Circle*)e;
+
+                gdImageArc(im,
+                           (int)transformX(c->getCenter().x),
+                           (int)transformY(c->getCenter().y, true),
+                           (int)transformD(c->getRadius() * 2),
+                           (int)transformD(c->getRadius() * 2),
+                           0, 360,
+                           black);
+            }
+            break;
+
+        case RS_ENTITY_TEXT: {
+                /*
+                DL_Text* t = (DL_Text*)e;
+
+                int brect[8];
+                gdImageStringTTF (im,
+                                  brect,
+                                  black,
+                                  "arial.ttf",
+                                  transformD (t->getHeight ()),
+                                  t->getAngle (),
+                                  (int)transformX (t->getStartPoint ().x),
+                                  (int)transformY (t->getStartPoint ().y),
+                                  t->getText ());
+                */
+            }
+            break;
+
+        default:
+            break;
+        }
+
+    }
+
+    // Open a file for writing.
+    fp = fopen(outputFile, "wb");
+
+    // Output the image to the disk file in the given format.
+    switch (format) {
+    case F_PNG:
+        gdImagePng(im, fp);
+        break;
+
+    case F_JPEG:
+        gdImageJpeg(im, fp, -1);
+        break;
+
+    case F_WBMP:
+        gdImageWBMP(im, black, fp);
+        break;
+
+    default:
+        break;
+    }
+
+    // Close the file
+    fclose(fp);
+
+    // Destroy the image in memory
+    gdImageDestroy(im);
+
+    return true;
 }
 
 
@@ -245,62 +256,78 @@ Vec2Web::outputGd (Format format)
  *               e.g. int handle = g2_open_GIF("simple.gif", 100, 100);
  */
 bool
-Vec2Web::outputG2 (Format format)
-{
-	if (format!=F_X11 && format!=F_PS && format!=F_WIN) return false;
+Vec2Web::outputG2(Format format) {
+    if (format!=F_GIF && format!=F_X11 && format!=F_PS && format!=F_WIN)
+        return false;
 
-	int handle;			// handle which identifies the image for g2
+    int handle = -1;			// handle which identifies the image for g2
 
-	switch (format) {
-		case F_PS:
-			handle = g2_open_PS (outputFile, g2_A4, g2_PS_land);
-			break;
-			
-		case F_X11:
-			handle = g2_open_X11 ((int)size.x, (int)size.y);
-			break;
-			
-		default:
-			handle = -1;
-			break;
-	}
-	
-	if (handle==-1) return false;
+    switch (format) {
+	case F_GIF:
+		//handle = g2_open_GIF(outputFile, (int)size.x, (int)size.y);
+		break;
 
-	for (DL_Entity* e = graphic.first(); e != 0; e = graphic.next())
-	{
-		switch (e->rtti ()) {
-			case DL_ENTITY_LINE:
-				g2_line (handle, 
-				         transformX (e->getStartPoint().x), transformY (e->getStartPoint().y),
-				         transformX (e->getEndPoint().x), transformY (e->getEndPoint().y) );
-				break;
+    case F_PS:
+        handle = g2_open_PS(outputFile, g2_A4, g2_PS_land);
+        break;
+
+    case F_X11:
+        handle = g2_open_X11((int)size.x, (int)size.y);
+        break;
+
+	case F_WIN:
+		//handle = g2_open_win32((int)size.x, (int)size.y, outputFile, 0);
+		break;
+
+    default:
+        handle = -1;
+        break;
+    }
+
+    if (handle==-1)
+        return false;
+
+    for (RS_Entity* e=graphic.firstEntity(); e!=0; e=graphic.nextEntity()) {
+        switch (e->rtti()) {
+        case RS_ENTITY_LINE: {
+				RS_Line* l = (RS_Line*)e;
 				
-			case DL_ENTITY_ARC: {
-				DL_Arc* a = (DL_Arc*)e;
-				
-				g2_arc (handle, 
-				        transformX (a->getCenter().x), transformY (a->getCenter().y),
-				        transformD (a->getRadius()), transformD (a->getRadius()),
-				        a->getAngle1(), a->getAngle2() );
-				} break;
-				
-			case DL_ENTITY_CIRCLE: {
-				DL_Circle* a = (DL_Circle*)e;
-				
-				g2_ellipse (handle, 
-				            transformX (a->getCenter().x), transformY (a->getCenter().y),
-				            transformD (a->getRadius()), transformD (a->getRadius()) );
-				} break;
-		
-			default:
-				break;
-		}
-	}
-	
-	if (format!=F_X11 && format!=F_WIN) g2_close(handle);
-                                                                                
-	return true;                                                                  
+            	g2_line(handle,
+                	    transformX(l->getStartPoint().x), 
+						transformY(l->getStartPoint().y),
+                	    transformX(l->getEndPoint().x), 
+						transformY(l->getEndPoint().y));
+			}
+            break;
+
+        case RS_ENTITY_ARC: {
+                RS_Arc* a = (RS_Arc*)e;
+
+                g2_arc(handle,
+                       transformX(a->getCenter().x), transformY(a->getCenter().y),
+                       transformD(a->getRadius()), transformD(a->getRadius()),
+                       a->getAngle1(), a->getAngle2());
+            }
+            break;
+
+        case RS_ENTITY_CIRCLE: {
+                RS_Circle* a = (RS_Circle*)e;
+
+                g2_ellipse(handle,
+                           transformX(a->getCenter().x), transformY(a->getCenter().y),
+                           transformD(a->getRadius()), transformD(a->getRadius()) );
+            }
+            break;
+
+        default:
+            break;
+        }
+    }
+
+    if (format!=F_X11 && format!=F_WIN)
+        g2_close(handle);
+
+    return true;
 }
 
 
@@ -308,9 +335,8 @@ Vec2Web::outputG2 (Format format)
  * Transforms an x coordinate in the graphic to a x cordinate in a bitmap.
  */
 double
-Vec2Web::transformX (double x)
-{
-	return (x * factor + offset.x);
+Vec2Web::transformX (double x) {
+    return (x * factor + offset.x);
 }
 
 
@@ -320,10 +346,9 @@ Vec2Web::transformX (double x)
  * \param swap Swap the coordinate (used if the bitmap has the zero on the top)
  */
 double
-Vec2Web::transformY (double y, bool swap)
-{
-	return swap ? (size.y - (y * factor + offset.y)) :
-	              (y * factor + offset.y);
+Vec2Web::transformY (double y, bool swap) {
+    return swap ? (size.y - (y * factor + offset.y)) :
+           (y * factor + offset.y);
 }
 
 
@@ -331,9 +356,8 @@ Vec2Web::transformY (double y, bool swap)
  * Transforms a distance in the graphic to a distance in a bitmap.
  */
 double
-Vec2Web::transformD (double d)
-{
-	return (d * factor);
+Vec2Web::transformD (double d) {
+    return (d * factor);
 }
 
 
