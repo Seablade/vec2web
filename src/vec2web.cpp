@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.3 2001/10/21 13:46:15 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.4 2002/06/05 17:06:31 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -156,18 +156,18 @@ Vec2Web::outputGd(Format format) {
 
     for (RS_Entity* e=graphic.firstEntity(); e!=0; e = graphic.nextEntity()) {
         switch (e->rtti()) {
-        case RS_ENTITY_LINE: {
+        case RS_Entity::RS_ENTITY_LINE: {
                 RS_Line* l = (RS_Line*)e;
                 gdImageLine(im,
-                            (int)transformX(l->getStartPoint().x),
-                            (int)transformY(l->getStartPoint().y, true),
-                            (int)transformX(l->getEndPoint().x),
-                            (int)transformY(l->getEndPoint().y, true),
+                            (int)transformX(l->getStartpoint().x),
+                            (int)transformY(l->getStartpoint().y, true),
+                            (int)transformX(l->getEndpoint().x),
+                            (int)transformY(l->getEndpoint().y, true),
                             black);
             }
             break;
 
-        case RS_ENTITY_ARC: {
+        case RS_Entity::RS_ENTITY_ARC: {
                 RS_Arc* a = (RS_Arc*)e;
 
                 gdImageArc(im,
@@ -181,7 +181,7 @@ Vec2Web::outputGd(Format format) {
             }
             break;
 
-        case RS_ENTITY_CIRCLE: {
+        case RS_Entity::RS_ENTITY_CIRCLE: {
                 RS_Circle* c = (RS_Circle*)e;
 
                 gdImageArc(im,
@@ -194,7 +194,7 @@ Vec2Web::outputGd(Format format) {
             }
             break;
 
-        case RS_ENTITY_TEXT: {
+        case RS_Entity::RS_ENTITY_TEXT: {
                 /*
                 DL_Text* t = (DL_Text*)e;
 
@@ -205,8 +205,8 @@ Vec2Web::outputGd(Format format) {
                                   "arial.ttf",
                                   transformD (t->getHeight ()),
                                   t->getAngle (),
-                                  (int)transformX (t->getStartPoint ().x),
-                                  (int)transformY (t->getStartPoint ().y),
+                                  (int)transformX (t->getStartpoint ().x),
+                                  (int)transformY (t->getStartpoint ().y),
                                   t->getText ());
                 */
             }
@@ -289,18 +289,18 @@ Vec2Web::outputG2(Format format) {
 
     for (RS_Entity* e=graphic.firstEntity(); e!=0; e=graphic.nextEntity()) {
         switch (e->rtti()) {
-        case RS_ENTITY_LINE: {
+        case RS_Entity::RS_ENTITY_LINE: {
 				RS_Line* l = (RS_Line*)e;
 				
             	g2_line(handle,
-                	    transformX(l->getStartPoint().x), 
-						transformY(l->getStartPoint().y),
-                	    transformX(l->getEndPoint().x), 
-						transformY(l->getEndPoint().y));
+                	    transformX(l->getStartpoint().x), 
+						transformY(l->getStartpoint().y),
+                	    transformX(l->getEndpoint().x), 
+						transformY(l->getEndpoint().y));
 			}
             break;
 
-        case RS_ENTITY_ARC: {
+        case RS_Entity::RS_ENTITY_ARC: {
                 RS_Arc* a = (RS_Arc*)e;
 
                 g2_arc(handle,
@@ -310,7 +310,7 @@ Vec2Web::outputG2(Format format) {
             }
             break;
 
-        case RS_ENTITY_CIRCLE: {
+        case RS_Entity::RS_ENTITY_CIRCLE: {
                 RS_Circle* a = (RS_Circle*)e;
 
                 g2_ellipse(handle,
