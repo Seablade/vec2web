@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: graphicview.h,v 1.7 2003/04/02 15:41:26 andrew23 Exp $
+**  $Id: graphicview.h,v 1.8 2003/04/02 17:54:41 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -80,7 +80,7 @@ public:
 	virtual void requestLineAngleOptions(double& , bool ) {}
 	virtual void requestLineBisectorOptions(double& , bool ) {}
 	virtual void requestToolBar(RS::ToolBarId) {}
-	virtual bool requestMoveDialog(RS_MoveData&) {}
+	virtual bool requestMoveDialog(RS_MoveData&) { return false; }
 
     virtual void updateCoordinateWidget(const RS_Vector& ,
                                         const RS_Vector& ) {}

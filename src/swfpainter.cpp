@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.cpp,v 1.9 2003/03/24 21:26:18 andrew23 Exp $
+**  $Id: swfpainter.cpp,v 1.10 2003/04/02 17:54:41 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -23,6 +23,8 @@
 #include "rs_math.h"
 #include "rs_color.h"
 
+
+#ifdef SWF_SUPPORT
 
 /**
  * Constructor.
@@ -233,3 +235,5 @@ void SWFPainter::setPen(int r, int g, int b) {
     colg = g;
     colb = b;
 }
+
+#endif

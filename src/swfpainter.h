@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.h,v 1.8 2003/03/24 21:26:18 andrew23 Exp $
+**  $Id: swfpainter.h,v 1.9 2003/04/02 17:54:42 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -27,7 +27,6 @@
 
 #ifdef SWF_SUPPORT
 #include <mingpp.h>
-#endif
 
 
 /**
@@ -81,5 +80,6 @@ private:
     int colr,colg,colb;
 };
 
+#endif
 #endif
 
