@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.h,v 1.4 2002/11/12 16:26:00 xiru Exp $
+**  $Id: vec2web.h,v 1.5 2002/11/21 16:09:24 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -48,7 +48,7 @@ public:
     void convert();
     bool output(const char* format);
     bool outputQt(const char* format);
-    bool outputMing();
+    bool outputMing(int compressLevel=9);
     //bool outputG2(const char* format);
 
     double transformX(double x);
@@ -71,6 +71,7 @@ private:
     double factor;
     //! Offset of the graphics zero point in pixel
     RS_Vector offset;
+    unsigned short swfw(const RS::LineWidth w);
 };
 
 #endif
