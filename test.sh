@@ -1,22 +1,24 @@
 #!/bin/sh
 # This converts all dxf files in directory demo to PNG, PS and WBMP
 
-rm test/*.png
-rm test/*.gif
-rm test/*.jpeg
-rm test/*.xbm
-rm test/*.xpm
-rm test/*.pnm
-rm test/*.mng
-rm test/*.bmp
-rm test/*.ps
-rm test/*.wbmp
+rm -f test/*.swf
+rm -f test/*.png
+rm -f test/*.gif
+rm -f test/*.jpeg
+rm -f test/*.xbm
+rm -f test/*.xpm
+rm -f test/*.pnm
+rm -f test/*.mng
+rm -f test/*.bmp
+rm -f test/*.ps
+rm -f test/*.wbmp
 
 for inputFile in `find ./test -name "*.dxf"`
 do
 	echo "Input: $inputFile"
 	outputFile=${inputFile%.*}
 	echo "Output: $outputFile"
+	./vec2web $inputFile $outputFile.swf -x 800 -y 600
 	./vec2web $inputFile $outputFile.png -x 800 -y 600
 	./vec2web $inputFile $outputFile.gif -x 800 -y 600
 	./vec2web $inputFile $outputFile.jpeg -x 800 -y 600
