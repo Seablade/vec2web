@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.16 2003/02/10 23:22:31 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.17 2003/02/11 16:32:23 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -172,6 +172,7 @@ unsigned short Vec2Web::swfw(const RS::LineWidth w) {
  *
  * \author Fabiano Weimar dos Santos (Xiru) <fabiano@x3ng.com.br>
  */
+
 bool Vec2Web::outputMing(int compressLevel) {
 
 #ifdef SWF_SUPPORT
@@ -193,6 +194,7 @@ bool Vec2Web::outputMing(int compressLevel) {
         shape->setLine( 1, 0, 0, 0 );  // Debuging...
 
         switch ( e->rtti() ) {
+		
         case RS::EntityPoint: {
                 RS_Point* p = (RS_Point*)e;
                 shape->movePenTo( (float)transformX(p->getPos().x - 1),
@@ -247,6 +249,12 @@ bool Vec2Web::outputMing(int compressLevel) {
                     }
                     first = false;
                 }
+		if ( (! first) && l->isClosed() ) {
+                    shape->movePenTo( (float)transformX(l->getStartpoint().x),
+                                      (float)transformY(l->getStartpoint().y, true) );
+                    shape->drawLineTo( (float)transformX(l->getEndpoint().x),
+                                       (float)transformY(l->getEndpoint().y, true) );
+		}
                 movie->add( shape );
             }
             break;
@@ -288,6 +296,7 @@ bool Vec2Web::outputMing(int compressLevel) {
 
     std::cerr << "No SWF Support compiled.\n";
     return false;
+    
 #endif
 
 }
