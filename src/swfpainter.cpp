@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.cpp,v 1.1 2003/02/12 21:54:13 andrew23 Exp $
+**  $Id: swfpainter.cpp,v 1.2 2003/02/13 20:54:32 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -52,18 +52,25 @@ SWFPainter::~SWFPainter() {}
 /**
  * Draws a point at (x1, y1).
  */
-//void SWFPainter::drawPoint(int x1, int y1) {
-//}
+void SWFPainter::drawPoint(double x, double y) {
+    SWFShape *shape = new SWFShape();
+    shape->setLine(width, colr,colg,colb);
+    shape->movePenTo((float)x-1, (float)y);
+    shape->drawLineTo((float)x+1, (float)y);
+    shape->movePenTo((float)x, (float)y-1);
+    shape->drawLineTo((float)x, (float)y+1);
+    movie->add(shape);
+}
 
 /**
  * Draws a line from (x1, y1) to (x2, y2).
  */
 void SWFPainter::drawLine(double x1, double y1, double x2, double y2) {
-	SWFShape *shape = new SWFShape();
-	shape->setLine(width, colr,colg,colb);
-	shape->movePenTo((float)x1, (float)y1);
-	shape->drawLineTo((float)x2, (float)y2);
-	movie->add(shape);
+    SWFShape *shape = new SWFShape();
+    shape->setLine(width, colr,colg,colb);
+    shape->movePenTo((float)x1, (float)y1);
+    shape->drawLineTo((float)x2, (float)y2);
+    movie->add(shape);
 }
 
 /**
@@ -86,73 +93,6 @@ void SWFPainter::drawArc(double cx, double cy, double radius,
 
 	drawArc(cx, cy, radius, a1, a2, reversed);
 
-	/*
-	SWFShape *shape = new SWFShape();
-	shape->setLine(width, colr,colg,colb);
-	shape->movePenTo((float)cx, (float)cy);
-	float ang1, ang2;
-	ang1 = (float)( (M_PI * 2 - a1) * ARAD + 90 );
-	ang2 = (float)( (M_PI * 2 - a2) * ARAD + 90 );
-	if (ang2 > ang1) {
-		ang1 += 360;
-	}
-	shape->drawArc((float)radius, a2, a1);
-	movie->add(shape);
-	*/
-	
-	/*
-    QPainter::drawArc(cx-radius, cy-radius,
-                      2*radius, 2*radius,
-                      a1*16, (a2-a1)*16);
-    */
-
-	/*
-	// More accurate but slower / bigger
-    if(radius<=0.5) {
-        drawGridPoint((int)cx, (int)cy);
-    } else {
-        int   cix;            // Next point on circle
-        int   ciy;            //
-        double aStep;         // Angle Step (rad)
-        double a;             // Current Angle (rad)
-
-        if(2.0/radius<=1.0) {
-            aStep=asin(2.0/radius);
-        } else {
-            aStep=1.0;
-        }
-
-        if(aStep<0.05) {
-            aStep = 0.05;
-        }
-
-        if(!reversed) {
-            // Arc Counterclockwise:
-            if(a1>a2-0.01) {
-                a2+=2*M_PI;
-            }
-            moveTo(x1, y1);
-            for(a=a1+aStep; a<=a2; a+=aStep) {
-                cix = RS_Math::round(cx+cos(a)*radius);
-                ciy = RS_Math::round(cy-sin(a)*radius);
-                lineTo(cix, ciy);
-            }
-            lineTo(x2, y2);
-        } else {
-            // Arc Clockwise:
-            if(a1<a2+0.01) {
-                a2-=2*M_PI;
-            }
-            moveTo(x1, y1);
-            for(a=a1-aStep; a>=a2; a-=aStep) {
-                cix = RS_Math::round(cx+cos(a)*radius);
-                ciy = RS_Math::round(cy-sin(a)*radius);
-                lineTo(cix, ciy);
-            }
-            lineTo(x2, y2);
-        }
-    }
-	*/
 }
 
 /**
@@ -167,11 +107,6 @@ void SWFPainter::drawArc(double cx, double cy, double radius,
 void SWFPainter::drawArc(double cx, double cy, double radius,
                          double a1, double a2,
                          bool reversed) {
-    /*
-    QPainter::drawArc(cx-radius, cy-radius,
-                      2*radius, 2*radius,
-                      a1*16, (a2-a1)*16);
-    */
 	SWFShape *shape = new SWFShape();
 	shape->setLine(width, colr,colg,colb);
 	shape->movePenTo((float)cx, (float)cy);
@@ -191,54 +126,6 @@ void SWFPainter::drawArc(double cx, double cy, double radius,
 		shape->drawArc((float)radius, ang2, ang1);
 	}
 	movie->add(shape);
-
-
-	/*
-    if(radius<=0.5) {
-        drawGridPoint((int)cx, (int)cy);
-    } else {
-        int   cix;            // Next point on circle
-        int   ciy;            //
-        double aStep;         // Angle Step (rad)
-        double a;             // Current Angle (rad)
-
-        if(2.0/radius<=1.0) {
-            aStep=asin(2.0/radius);
-        } else {
-            aStep=1.0;
-        }
-
-        if(aStep<0.05) {
-            aStep = 0.05;
-        }
-
-        moveTo(RS_Math::round(cx+cos(a1)*radius),
-               RS_Math::round(cy-sin(a1)*radius));
-        if(!reversed) {
-            // Arc Counterclockwise:
-            if(a1>a2-0.01) {
-                a2+=2*M_PI;
-            }
-            for(a=a1+aStep; a<=a2; a+=aStep) {
-                cix = RS_Math::round(cx+cos(a)*radius);
-                ciy = RS_Math::round(cy-sin(a)*radius);
-                lineTo(cix, ciy);
-            }
-        } else {
-            // Arc Clockwise:
-            if(a1<a2+0.01) {
-                a2-=2*M_PI;
-            }
-            for(a=a1-aStep; a>=a2; a-=aStep) {
-                cix = RS_Math::round(cx+cos(a)*radius);
-                ciy = RS_Math::round(cy-sin(a)*radius);
-                lineTo(cix, ciy);
-            }
-        }
-        lineTo(RS_Math::round(cx+cos(a2)*radius),
-               RS_Math::round(cy-sin(a2)*radius));
-    }
-	*/
 }
 
 
@@ -248,23 +135,14 @@ void SWFPainter::drawArc(double cx, double cy, double radius,
  * @param cy center in y
  * @param radius Radius
  */
-/*
+
 void SWFPainter::drawCircle(double cx, double cy, double radius) {
-
-    if (previewMode && radius<50) {
-        // This is _very_ slow for large arcs:
-        QPainter::drawEllipse(cx-radius, cy-radius,
-                              2*radius, 2*radius);
-    } else {
-        drawArc(cx, cy,
-                radius,
-                0.0, 2*M_PI,
-                (int)(cx+radius), (int)(cy), (int)(cx+radius), (int)(cy),
-                false);
-    }
+    SWFShape *shape = new SWFShape();
+    shape->setLine(width, colr,colg,colb);
+    shape->movePenTo(cx, cy);
+    shape->drawCircle(radius);
+    movie->add(shape);
 }
-*/
-
 
 
 /**

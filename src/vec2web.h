@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.h,v 1.7 2003/02/12 21:54:14 andrew23 Exp $
+**  $Id: vec2web.h,v 1.8 2003/02/13 20:54:33 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -25,6 +25,7 @@
 #include "rs_vector.h"
 #include <stdio.h>
 
+
 /**
  * Class for converting between formats or showing a file in a window.
  */
@@ -48,7 +49,6 @@ public:
     void convert();
     bool output(const char* format);
     bool outputQt(const char* format);
-    bool outputMing2(int compressLevel=9);
     bool outputMing(int compressLevel=9);
     bool outputDXML();
 
@@ -72,7 +72,6 @@ private:
     double factor;
     //! Offset of the graphics zero point in pixel
     RS_Vector offset;
-    unsigned short swfw(const RS::LineWidth w);
 };
 
 #endif

@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.24 2003/02/12 21:54:14 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.25 2003/02/13 20:54:33 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -36,7 +36,6 @@
 #include <ctype.h>
 
 #ifdef SWF_SUPPORT
-//#include <mingpp.h>
 #include <rs.h>
 #include "swfpainter.h"
 #endif
@@ -112,8 +111,7 @@ bool Vec2Web::output(const char* format) {
                10 - (int)(graphic.getMin().y * factor));
 
     if ( ! strcmp(format, "SWF") ) {
-        //outputMing(9);
-        outputMing2(9);
+        outputMing(9);
     } else if ( ! strcmp(format, "DXML") ) {
         outputDXML();
     } else {
@@ -160,26 +158,7 @@ bool Vec2Web::outputQt(const char* format) {
 }
 
 
-/**
- * Wrapper for SWF line width conversion.
- *
- * \author Fabiano Weimar dos Santos (Xiru) <fabiano@x3ng.com.br>
- */
-
-unsigned short Vec2Web::swfw(const RS::LineWidth w) {
-    unsigned short sw = (unsigned short) ( w / 2.4 );
-    if ( sw < 1 ) {
-        sw = 1;
-    }
-    if ( sw > 10 ) {
-        sw = 10;
-    }
-    return sw;
-}
-
-
-
-bool Vec2Web::outputMing2(int compressLevel) {
+bool Vec2Web::outputMing(int compressLevel) {
 #ifdef SWF_SUPPORT
 
     Ming_init();
@@ -194,10 +173,7 @@ bool Vec2Web::outputMing2(int compressLevel) {
     gv.zoomAuto();
     gv.drawEntity(&graphic, false, true);
 
-    //SWFPainter p(movie);
-    //gv.drawIt();
-
-    movie->save(outputFile);
+    movie->save(outputFile, compressLevel);
 
     return true;
 #else
@@ -207,161 +183,6 @@ bool Vec2Web::outputMing2(int compressLevel) {
 #endif
 }
 
-
-
-
-/**
- * Outputs a SWF (Shockwave Flash) object from the graphic.
- *
- * \author Fabiano Weimar dos Santos (Xiru) <fabiano@x3ng.com.br>
- */
-bool Vec2Web::outputMing(int compressLevel) {
-
-#ifdef SWF_SUPPORT
-
-    Ming_init();
-
-    //SWFMovie *movie = new SWFMovie();
-
-    //movie->setDimension( 100,100 );
-    //movie->setBackground( 255, 255, 255 );   // White
-
-    //SWFShape* shape = new SWFShape();
-    /*
-    shape->setLine(2, 1, 1, 1);
-    shape->movePenTo(50,50);
-    shape->drawLineTo(60,80);
-    shape->drawLineTo(60,-60);
-    shape->drawLineTo(-60,-60);
-    shape->drawLineTo(60,60);
-    */
-    //movie->add(shape);
-    //movie->nextFrame();
-    //movie->save(outputFile);
-    //delete shape;
-    //delete movie;
-
-    SWFMovie *movie = new SWFMovie();
-
-    movie->setDimension( (float)maxSize.x, (float)maxSize.y );
-
-    movie->setBackground( (int)255, (int)255, (int)255 );   // White
-
-    for ( RS_Entity* e=graphic.firstEntity(); e!=0; e=graphic.nextEntity() ) {
-
-        SWFShape *shape = new SWFShape();
-
-        RS_Color c = e->getPen().getColor();
-        //shape->setLine( swfw(e->getPen().getWidth()), (int)c.red(), (int)c.green(), (int)c.blue() );
-        shape->setLine( 1, (int)c.red(), (int)c.green(), (int)c.blue() );
-        //shape->setLine( 1, 0, 0, 0 );  // Debuging...
-
-        switch ( e->rtti() ) {
-
-        case RS::EntityPoint: {
-                RS_Point* p = (RS_Point*)e;
-                shape->movePenTo( (float)transformX(p->getPos().x - 1),
-                                  (float)transformY(p->getPos().y, true) );
-                shape->drawLineTo( (float)transformX(p->getPos().x + 1),
-                                   (float)transformY(p->getPos().y, true) );
-                shape->movePenTo( (float)transformX(p->getPos().x),
-                                  (float)transformY(p->getPos().y - 1, true) );
-                shape->drawLineTo( (float)transformX(p->getPos().x),
-                                   (float)transformY(p->getPos().y + 1, true) );
-                movie->add( shape );
-            }
-            break;
-
-        case RS::EntityLine: {
-                RS_Line* l = (RS_Line*)e;
-                shape->movePenTo( (float)transformX(l->getStartpoint().x),
-                                  (float)transformY(l->getStartpoint().y, true) );
-                shape->drawLineTo( (float)transformX(l->getEndpoint().x),
-                                   (float)transformY(l->getEndpoint().y, true) );
-                movie->add( shape );
-            }
-            break;
-
-        case RS::EntityInsert:
-        case RS::EntityDimAligned:
-        case RS::EntityDimLinear:
-        case RS::EntityText:
-        case RS::EntityPolyline: {
-                RS_Polyline* l = (RS_Polyline*)e;
-                bool first = true;
-                for ( RS_Entity* v=l->firstEntity(RS::ResolveNone); v!=NULL;
-                        v=l->nextEntity(RS::ResolveNone) ) {
-                    if (v->rtti()==RS::EntityLine) {
-                        RS_Line* l = (RS_Line*)v;
-                        if (first) {
-                            shape->movePenTo( (float)transformX(l->getStartpoint().x),
-                                              (float)transformY(l->getStartpoint().y, true) );
-                        }
-                        shape->drawLineTo( (float)transformX(l->getEndpoint().x),
-                                           (float)transformY(l->getEndpoint().y, true) );
-                    } else if (v->rtti()==RS::EntityArc) {
-                        RS_Arc* a = (RS_Arc*)v;
-                        shape->movePenTo( (float)transformX(a->getCenter().x),
-                                          (float)transformY(a->getCenter().y, true) );
-                        float a1, a2;
-                        a1 = a->isReversed() ? a->getAngle2() : a->getAngle1();
-                        a2 = a->isReversed() ? a->getAngle1() : a->getAngle2();
-                        a1 = (float)( ( M_PI * 2 - a1 ) * ARAD + 90 );
-                        a2 = (float)( ( M_PI * 2 - a2 ) * ARAD + 90 );
-                        if ( a2 > a1 )
-                            a1 += 360;
-                        shape->drawArc( (float)transformD(a->getRadius()), a2, a1 );
-                        shape->movePenTo( (float)transformX(a->getEndpoint().x),
-                                          (float)transformY(a->getEndpoint().y, true) );
-                    }
-                    first = false;
-                }
-                movie->add( shape );
-            }
-            break;
-
-        case RS::EntityCircle: {
-                RS_Circle* c = (RS_Circle*)e;
-                shape->movePenTo( (float)transformX(c->getCenter().x),
-                                  (float)transformY(c->getCenter().y, true) );
-                shape->drawCircle( (float)transformD(c->getRadius()) );
-                movie->add( shape );
-            }
-            break;
-
-        case RS::EntityArc: {
-                RS_Arc* a = (RS_Arc*)e;
-                shape->movePenTo( (float)transformX(a->getCenter().x),
-                                  (float)transformY(a->getCenter().y, true) );
-                float a1, a2;
-                a1 = (float)( ( M_PI * 2 - a->getAngle1() ) * ARAD + 90 );
-                a2 = (float)( ( M_PI * 2 - a->getAngle2() ) * ARAD + 90 );
-                if ( a2 > a1 )
-                    a1 += 360;
-                shape->drawArc( (float)transformD(a->getRadius()), a2, a1 );
-                movie->add( shape );
-            }
-            break;
-
-        default:
-            break;
-        }
-
-    }
-
-    //movie->save(outputFile,compressLevel);
-    movie->save(outputFile);
-
-    return true;
-
-#else
-
-    std::cerr << "No SWF Support compiled.\n";
-    return false;
-
-#endif
-
-}
 
 /**
  * Outputs a DXML file (a minimalistic XML representation of the DXF file format).
@@ -409,9 +230,6 @@ bool Vec2Web::outputDXML() {
             }
             break;
 
-            //	case RS::EntityDimAligned:
-            //	case RS::EntityDimLinear:
-            //	case RS::EntityText:
         case RS::EntityPolyline: {
                 RS_Polyline* l = (RS_Polyline*)e;
                 bool first = true;
@@ -461,7 +279,7 @@ bool Vec2Web::outputDXML() {
             }
             break;
 
-        default:
+	default:
             break;
         }
 

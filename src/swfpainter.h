@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.h,v 1.1 2003/02/12 21:54:13 andrew23 Exp $
+**  $Id: swfpainter.h,v 1.2 2003/02/13 20:54:33 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -41,7 +41,7 @@ public:
     virtual ~SWFPainter();
 
     virtual void drawGridPoint(double x1, double y1) {}
-    virtual void drawPoint(double x1, double y1) {}
+    virtual void drawPoint(double x1, double y1);
     virtual void drawLine(double x1, double y1, double x2, double y2);
     virtual void drawArc(double cx, double cy, double radius,
                          double a1, double a2,
@@ -50,7 +50,7 @@ public:
     virtual void drawArc(double cx, double cy, double radius,
                          double a1, double a2,
                          bool reversed);
-    virtual void drawCircle(double cx, double cy, double radius) {}
+    virtual void drawCircle(double cx, double cy, double radius);
     virtual void drawEllipse(double cx, double cy,
                              double radius1, double radius2,
                              double angle,
