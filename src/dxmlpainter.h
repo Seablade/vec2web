@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: dxmlpainter.h,v 1.4 2003/02/28 19:04:59 andrew23 Exp $
+**  $Id: dxmlpainter.h,v 1.5 2003/03/24 21:26:18 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -34,18 +34,18 @@ class DXMLPainter: public RS_Painter {
 public:
     DXMLPainter(char* dxml);
     virtual ~DXMLPainter();
-    virtual void drawGridPoint(double /*x1*/, double /*y1*/) {}
-    virtual void drawPoint(double x1, double y1);
-    virtual void drawLine(double x1, double y1, double x2, double y2);
-    virtual void drawArc(double cx, double cy, double radius,
+    virtual void drawGridPoint(const RS_Vector&) {}
+    virtual void drawPoint(const RS_Vector& p);
+    virtual void drawLine(const RS_Vector& p1, const RS_Vector& p2);
+    virtual void drawArc(const RS_Vector& cp, double radius,
                          double a1, double a2,
-                         double x1, double y1, double x2, double y2,
+                         const RS_Vector& p1, const RS_Vector& p2,
                          bool reversed);
-    virtual void drawArc(double cx, double cy, double radius,
+    virtual void drawArc(const RS_Vector& cp, double radius,
                          double a1, double a2,
                          bool reversed);
-    virtual void drawCircle(double /*cx*/, double /*cy*/, double /*radius*/) {}
-    virtual void drawEllipse(double cx, double cy,
+    virtual void drawCircle(const RS_Vector&, double /*radius*/) {}
+    virtual void drawEllipse(const RS_Vector& cp,
                              double radius1, double radius2,
                              double angle,
                              double a1, double a2,
@@ -58,9 +58,9 @@ public:
                            const QString& /*text*/) {}
     virtual void fillRect(int /*x1*/, int /*y1*/, int /*w*/, int /*h*/,
                           const RS_Color& /*col*/) {}
-    virtual void fillTriangle(int /*x1*/, int /*y1*/,
-                              int /*x2*/, int /*y2*/,
-                              int /*x3*/, int /*y3*/) {}
+    virtual void fillTriangle(const RS_Vector& /*p1*/,
+                              const RS_Vector& /*p2*/,
+                              const RS_Vector& /*p3*/) {}
     virtual void setPreviewPen() {}
     virtual RS_Pen getPen();
     virtual void setPen(const RS_Pen& pen);

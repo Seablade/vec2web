@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.cpp,v 1.8 2003/02/28 19:05:00 andrew23 Exp $
+**  $Id: swfpainter.cpp,v 1.9 2003/03/24 21:26:18 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -43,13 +43,13 @@ SWFPainter::~SWFPainter() {}
 /**
  * Draws a point at (x,y).
  */
-void SWFPainter::drawPoint(double x, double y) {
+void SWFPainter::drawPoint(const RS_Vector& p) {
     SWFShape *shape = new SWFShape();
     shape->setLine(width, colr, colg, colb);
-    shape->movePenTo((float)x-1, (float)y);
-    shape->drawLineTo((float)x+1, (float)y);
-    shape->movePenTo((float)x, (float)y-1);
-    shape->drawLineTo((float)x, (float)y+1);
+    shape->movePenTo((float)p.x-1, (float)p.y);
+    shape->drawLineTo((float)p.x+1, (float)p.y);
+    shape->movePenTo((float)p.x, (float)p.y-1);
+    shape->drawLineTo((float)p.x, (float)p.y+1);
     movie->add(shape);
 }
 
@@ -57,11 +57,11 @@ void SWFPainter::drawPoint(double x, double y) {
 /**
  * Draws a line from (x1, y1) to (x2, y2).
  */
-void SWFPainter::drawLine(double x1, double y1, double x2, double y2) {
+void SWFPainter::drawLine(const RS_Vector& p1, const RS_Vector& p2) {
     SWFShape *shape = new SWFShape();
     shape->setLine(width,colr,colg,colb);
-    shape->movePenTo((float)x1, (float)y1);
-    shape->drawLineTo((float)x2, (float)y2);
+    shape->movePenTo((float)p1.x, (float)p1.y);
+    shape->drawLineTo((float)p2.x, (float)p2.y);
     movie->add(shape);
 }
 
@@ -79,12 +79,12 @@ void SWFPainter::drawLine(double x1, double y1, double x2, double y2) {
  * @param y2 endpoint y
  * @param reversed true: clockwise, false: counterclockwise
  */
-void SWFPainter::drawArc(double cx, double cy, double radius,
+void SWFPainter::drawArc(const RS_Vector& cp, double radius,
                          double a1, double a2,
-                         double /*x1*/, double /*y1*/, 
-						 double /*x2*/, double /*y2*/,
+                         const RS_Vector& /*p1*/, 
+						 const RS_Vector& /*p2*/,
                          bool reversed) {
-    drawArc(cx, cy, radius, a1, a2, reversed);
+    drawArc(cp, radius, a1, a2, reversed);
 }
 
 /**
@@ -96,12 +96,12 @@ void SWFPainter::drawArc(double cx, double cy, double radius,
  * @param a2 Angle 2 in rad
  * @param reversed true: clockwise, false: counterclockwise
  */
-void SWFPainter::drawArc(double cx, double cy, double radius,
+void SWFPainter::drawArc(const RS_Vector& cp, double radius,
                          double a1, double a2,
                          bool reversed) {
     SWFShape *shape = new SWFShape();
     shape->setLine(width,colr,colg,colb);
-    shape->movePenTo((float)cx, (float)cy);
+    shape->movePenTo((float)cp.x, (float)cp.y);
     float ang1, ang2;
     ang1 = (float)( (M_PI * 2 - a1) * ARAD + 90 );
     ang2 = (float)( (M_PI * 2 - a2) * ARAD + 90 );
@@ -131,7 +131,7 @@ void SWFPainter::drawArc(double cx, double cy, double radius,
  * @param a2 Angle 2 in rad
  * @param reversed true: clockwise, false: counterclockwise
  */
-void SWFPainter::drawEllipse(double cx, double cy,
+void SWFPainter::drawEllipse(const RS_Vector& cp,
                              double radius1, double radius2,
                              double angle,
                              double a1, double a2,
@@ -165,9 +165,10 @@ void SWFPainter::drawEllipse(double cx, double cy,
     aStep=0.01;
 
     RS_Vector vp;
-    RS_Vector vc(cx, cy);
-    vp.set(cx+cos(a1)*radius1,
-           cy-sin(a1)*radius2);
+    //RS_Vector vc(cx, cy);
+	RS_Vector vc = cp;
+    vp.set(cp.x+cos(a1)*radius1,
+           cp.y-sin(a1)*radius2);
     vp.rotate(vc, -angle);
     shape->movePenTo((float)RS_Math::round(vp.x),
 		     (float)RS_Math::round(vp.y));
@@ -177,8 +178,8 @@ void SWFPainter::drawEllipse(double cx, double cy,
             a2+=2*M_PI;
         }
         for(a=a1+aStep; a<=a2; a+=aStep) {
-            vp.set(cx+cos(a)*radius1,
-                   cy-sin(a)*radius2);
+            vp.set(cp.x+cos(a)*radius1,
+                   cp.y-sin(a)*radius2);
             vp.rotate(vc, -angle);
             shape->drawLineTo((float)RS_Math::round(vp.x),
 			      (float)RS_Math::round(vp.y));
@@ -189,15 +190,15 @@ void SWFPainter::drawEllipse(double cx, double cy,
             a-=2*M_PI;
         }
         for(a=a1-aStep; a>=a2; a-=aStep) {
-            vp.set(cx+cos(a)*radius1,
-                   cy-sin(a)*radius2);
+            vp.set(cp.x+cos(a)*radius1,
+                   cp.y-sin(a)*radius2);
             vp.rotate(vc, -angle);
             shape->drawLineTo((float)RS_Math::round(vp.x),
 			      (float)RS_Math::round(vp.y));
         }
     }
-    vp.set(cx+cos(a2)*radius1,
-           cy-sin(a2)*radius2);
+    vp.set(cp.x+cos(a2)*radius1,
+           cp.y-sin(a2)*radius2);
     vp.rotate(vc, -angle);
     shape->drawLineTo((float)RS_Math::round(vp.x),
                       (float)RS_Math::round(vp.y));

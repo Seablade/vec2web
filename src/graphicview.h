@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: graphicview.h,v 1.5 2003/03/15 02:46:42 andrew23 Exp $
+**  $Id: graphicview.h,v 1.6 2003/03/24 21:26:18 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -76,6 +76,10 @@ public:
     virtual void requestArcOptions(RS_ArcData& , bool) {}
     virtual void requestCircleOptions(RS_CircleData&, bool) {}
     virtual void requestSnapDistOptions(double&, bool) {}
+	virtual void requestLineParallelOptions(double& , bool ) {}
+	virtual void requestLineAngleOptions(double& , bool ) {}
+	virtual void requestLineBisectorOptions(double& , bool ) {}
+	virtual void requestToolBar(RS::ToolBarId) {}
 
     virtual void updateCoordinateWidget(const RS_Vector& ,
                                         const RS_Vector& ) {}
