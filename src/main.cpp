@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: main.cpp,v 1.8 2003/04/22 12:08:55 andrew23 Exp $
+**  $Id: main.cpp,v 1.9 2003/05/02 17:08:01 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -28,6 +28,10 @@
 
 #include <qapplication.h>
 #include <qprinter.h>
+
+#define VW_APPNAME "vec2web"
+#define VW_VERSION "0.0.5"
+#define VW_DIRNAME "vec2web"
 
 void usage();
 
@@ -110,7 +114,7 @@ int main(int argc, char** argv) {
 
         QApplication a(argc, argv);
 
-        RS_SYSTEM->init("vec2web", "vec2web");
+    	RS_SYSTEM->init(VW_APPNAME, VW_VERSION, VW_DIRNAME);
         RS_FONTLIST->init();
 
         Vec2Web v2w;

@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: graphicview.h,v 1.9 2003/04/22 12:08:55 andrew23 Exp $
+**  $Id: graphicview.h,v 1.10 2003/05/02 17:08:01 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -87,6 +87,9 @@ public:
     virtual RS_Block* requestNewBlockDialog() {
         return NULL;
     }
+	virtual RS_Block* requestBlockAttributesDialog(RS_BlockList* = 0) {
+        return NULL;
+	}
     virtual RS_Block* requestBlockRemovalDialog(
         RS_BlockList* = NULL) {
         return NULL;

@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.29 2003/04/22 12:08:56 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.30 2003/05/02 17:08:01 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -50,7 +50,6 @@ Vec2Web::Vec2Web () {
     scaleUp = true;
     factor = 1.0;
     offset.set(0,0);
-    RS_SYSTEM->init("vec2web", "vec2web");
 }
 
 
