@@ -1,35 +1,43 @@
-# Generated automatically from Makefile.in by configure.
+# Makefile for QCad
 
-prefix =	/usr/local
-exec_prefix =	${prefix}
-bindir =	${exec_prefix}/bin
+VERSION = 0.0.2
 
-VERSION = 0.0.1
+# vec2web installation directories
+#
 
-OBJF =    src/main.o \
-          src/vec2web.o
-EXTERN_LIBS = -L/usr/local/lib -lg2 -lgd -lpng -lz -lm -lfreetype -ljpeg -L$(HOME)/local/lib -lqcad -ldxf -L$(QTDIR)/lib -lqt -L/usr/X11R6/lib -lX11
-INCLUDES = -I$(HOME)/local/include -I$(QTDIR)/include
+# default: /usr/local/...
+#LIBDIR = /usr/local/lib
+#INCDIR = /usr/local/include/
 
-all: vec2web
+# users home dir:
+INSTALLDIR = $(HOME)/local
+
+FIND = find
+
+all: prepare vec2web
+
+prepare:
+
+vec2web: src/Makefile src/*.h src/*.cpp ../dxflib/lib/libdxf.a ../qcadguiqt/lib/libqcadguiqt.a ../qcadlib/lib/libqcad.a
+	- rm vec2web
+	cd src && $(MAKE)
+
+src/Makefile: src/vec2web.pro
+	cd src && qmake vec2web.pro
 
 clean:
-	@echo "Cleaning project..."
-	@find . -name '*.o' -exec rm "{}" \;
-	@if [ -f vec2web ]; then rm -f vec2web; fi
-
-distclean: clean
-	rm -f config.log config.cache Makefile config.status
-
-vec2web: $(OBJF)
-	c++ -o vec2web $(OBJF) $(EXTERN_LIBS)
-
-%.o : %.cpp
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $(INCLUDES) -O3 -Wall $< -o $@
-
+	cd src && $(MAKE) clean
+	- rm vec2web
+	-$(FIND) . -name "*~" -exec rm -f {} \;
+  
 docu:
 	-(doxygen ./doxygen.cfg)
- 
-dist:   clean
-	-rm -d ./doc/classref/html/en/*
+
+statistics:
+	@echo "Lines in source files:"
+	-find -name *.cpp | xargs cat | wc
+	@echo "Lines in header files:"
+	-find -name *.h | xargs cat | wc
+
+dist:	clean
 

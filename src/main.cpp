@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: main.cpp,v 1.2 2001/10/21 13:46:15 andrew23 Exp $
+**  $Id: main.cpp,v 1.3 2002/11/10 15:07:41 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -22,6 +22,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "vec2web.h"
+
+#include <qapplication.h>
 
 void usage();
 
@@ -54,6 +56,8 @@ int main(int argc, char** argv) {
 
             ++c;
         }
+
+    	QApplication a(argc, argv);
 
         Vec2Web v2w;
         v2w.setInputFile(argv[1]);

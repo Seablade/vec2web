@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.h,v 1.2 2001/10/21 13:46:15 andrew23 Exp $
+**  $Id: vec2web.h,v 1.3 2002/11/10 15:07:41 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -21,8 +21,8 @@
 #ifndef _VEC2WEB_H
 #define _VEC2WEB_H
 
-#include "qcadlib/rs_graphic.h"
-#include "qcadlib/rs_vector.h"
+#include "rs_graphic.h"
+#include "rs_vector.h"
 #include <stdio.h>
 
 /**
@@ -30,8 +30,6 @@
  */
 class Vec2Web {
 public:
-    enum Format { F_DXF, F_PNG, F_GIF, F_JPEG, F_PS, F_WBMP, F_X11, F_WIN };
-
     Vec2Web();
 
     void setInputFile(const char* fn) {
@@ -46,13 +44,11 @@ public:
     void setScaleUp(bool on) {
         scaleUp=on;
     }
-    //void setFactor (double f) { factor=f; }
-    //void setOffset (double x, double y) { offset.set (x,y); }
 
     void convert();
-    bool output(Format format);
-    bool outputGd(Format format);
-    bool outputG2(Format format);
+    bool output(const char* format);
+    bool outputQt(const char* format);
+    //bool outputG2(const char* format);
 
     double transformX(double x);
     double transformY(double y, bool swap=false);
@@ -74,7 +70,6 @@ private:
     double factor;
     //! Offset of the graphics zero point in pixel
     RS_Vector offset;
-}
-;
+};
 
 #endif

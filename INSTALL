@@ -3,8 +3,8 @@ vec2web - Installation
 
 Please note that vec2web requires the following libraries:
 dxflib (http://dxflib.sourceforge.net)
-gd (http://www.boutell.com/gd)
-g2 (http://g2.sourceforge.net)
+qcadlib (http://qcad2.sourceforge.net)
+qt (http://www.trolltech.com)
 
 LINUX
 -----
@@ -16,15 +16,9 @@ UNIX
 
 1. Extract package with gzip -dc vec2web-xxxx.tar.gz | tar xvf - 
 
-2. Run './configure'
+2. Run 'make'
 
-3. Optionally run 'make depend'
-
-4. Run 'make' 
-
-5. Run 'make install'. 
-
-6. Optional: run 'make demo' to compile the demo application
+3. Optional: run './test.sh' to convert the demo files
 
 
 WINDOWS XX

@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.7 2002/10/09 01:00:32 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.8 2002/11/10 15:07:41 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -20,14 +20,18 @@
 
 #include "vec2web.h"
 
-#include "dxflib/dl_creationinterface.h"
-#include "dxflib/dl_dxf.h"
+#include "graphicview.h"
 
-#include "qcadlib/rs_creation.h"
-#include "qcadlib/rs_color.h"
-#include "qcadlib/rs_graphic.h"
-#include "qcadlib/rs_import.h"
+#include "dl_creationinterface.h"
+#include "dl_dxf.h"
 
+#include "rs_creation.h"
+#include "rs_color.h"
+#include "rs_graphic.h"
+#include "rs_import.h"
+#include "rs_system.h"
+
+/*
 extern "C" {
 #include <gd.h>
 #include <gdfontl.h>
@@ -35,6 +39,12 @@ extern "C" {
 #include <g2_PS.h>
 #include <g2_X11.h>
 }
+*/
+
+#include <qimage.h>
+
+#include <ctype.h>
+
 
 /**
  * Default constructor.
@@ -47,63 +57,60 @@ Vec2Web::Vec2Web () {
     scaleUp = true;
     factor = 1.0;
     offset.set(0,0);
+
+	RS_SYSTEM->init("vec2web", "vec2web");
 }
 
 
 /**
  * Converts inputFile to outputFile.
  */
-void
-Vec2Web::convert() {
+void Vec2Web::convert() {
     // Read the DXF into graphic object
     RS_Import import(graphic);
-
     import.fileImport(inputFile);
 
-	//cout << graphic;
-	//getchar();
+    //cout << graphic;
+    //getchar();
 
     // View in x11 if no outputfile was given.
     if (strlen(outputFile)==0) {
-        output(F_X11);
+        output("X11");
         getchar();
         return;
     }
 
     int len = strlen(outputFile);
+	int i=len-2;
+	while (i>0 && outputFile[i]!='.') {
+		--i;
+	}
 
-    if (len<4) {
-        std::cout << "Can't find out file type of output file... please specify!";
-    } else {
-        if (len>4 && !strcmp(&outputFile[len-4], "wbmp")) {
-            output(F_WBMP);
-        } else if (len>4 && !strcmp(&outputFile[len-4], "jpeg")) {
-            output(F_JPEG);
-        } else if (len>3 && !strcmp(&outputFile[len-3], "png")) {
-            output(F_PNG);
-        } else if (len>3 && !strcmp(&outputFile[len-3], "jpg")) {
-			output(F_JPEG);
-		} else if (len>2 && !strcmp(&outputFile[len-2], "ps")) {
-            output(F_PS);
-        }
-    }
+	char extension[16];
+	strncpy(extension, &outputFile[i+1], 15);
+	for (i=0; i<(int)strlen(extension); ++i) {
+		extension[i] = toupper(extension[i]);
+	}
+
+	output(extension);
 }
 
 
 /**
  * Outputs an image from the graphic in the format descibed by 'format'.
  */
-bool
-Vec2Web::output(Format format) {
+bool Vec2Web::output(const char* format) {
     bool ret=true;
 
     size.set(graphic.getMax().x - graphic.getMin().x,
              graphic.getMax().y - graphic.getMin().y);
 
-    if (scaleUp || size.x>maxSize.x)
+    if (scaleUp || size.x>maxSize.x) {
         factor = maxSize.x / size.x;
-    if (scaleUp || size.y>maxSize.y)
+	}
+    if (scaleUp || size.y>maxSize.y) {
         factor = min(maxSize.y / size.y, factor);
+	}
 
     size *= factor;
     size += RS_Vector(20,20);
@@ -111,23 +118,7 @@ Vec2Web::output(Format format) {
     offset.set(10 - (int)(graphic.getMin().x * factor),
                10 - (int)(graphic.getMin().y * factor));
 
-    switch (format) {
-    case F_PNG:
-    case F_JPEG:
-    case F_WBMP:
-        outputGd(format);
-        break;
-
-    case F_PS:
-    case F_X11:
-    case F_WIN:
-        outputG2(format);
-        break;
-
-    default:
-        ret = false;
-        break;
-    }
+	outputQt(format);
 
     return ret;
 }
@@ -136,127 +127,26 @@ Vec2Web::output(Format format) {
 /**
  * Outputs a png image from the graphic.
  */
-bool
-Vec2Web::outputGd(Format format) {
-    if (format!=F_PNG && format!=F_JPEG && format!=F_WBMP)
-        return false;
+bool Vec2Web::outputQt(const char* format) {
+	GraphicView gv((int)maxSize.x, (int)maxSize.y);
+	gv.setContainer(&graphic);
+	gv.zoomAuto();
+	gv.drawEntity(&graphic, false, true);
+	QPixmap* buffer = gv.getBuffer();
 
-    // Declare the image
-    gdImagePtr im;
-    // Declare output files
-    FILE *fp;
-    // Declare color indexes
-    int black;
-    int white;
+	if (buffer!=NULL) {
+		QImageIO iio;
+		QImage img;
+		img = *buffer;
+		iio.setImage(img);
+		iio.setFileName(outputFile);
+		iio.setFormat(format);
+        if (iio.write()) {
+			return true;
+		}
+	}
 
-    // Allocate the image:
-    im = gdImageCreate((int)size.x, (int)size.y);
-
-    // Allocate the colors.
-    // The first color in a new image will be the background color.
-    white = gdImageColorAllocate(im, 255, 255, 255);
-    black = gdImageColorAllocate(im, 0, 0, 0);
-
-    for (RS_Entity* e=graphic.firstEntity(); e!=0; e = graphic.nextEntity()) {
-
-		// set color:
-		RS_Color rc = e->getPen().getColor();
-		int col = gdImageColorAllocate(im, 
-		            rc.red(), rc.green(), rc.blue());
-	
-        switch (e->rtti()) {
-        case RS::EntityLine: {
-                RS_Line* l = (RS_Line*)e;
-                gdImageLine(im,
-                            (int)transformX(l->getStartpoint().x),
-                            (int)transformY(l->getStartpoint().y, true),
-                            (int)transformX(l->getEndpoint().x),
-                            (int)transformY(l->getEndpoint().y, true),
-                            col);
-            }
-            break;
-
-        case RS::EntityArc: {
-                RS_Arc* a = (RS_Arc*)e;
-
-                gdImageArc(im,
-                           (int)transformX(a->getCenter().x),
-                           (int)transformY(a->getCenter().y, true),
-                           (int)transformD(a->getRadius() * 2),
-                           (int)transformD(a->getRadius() * 2),
-                           (int)((2*M_PI - a->getAngle2())*ARAD),
-                           (int)((2*M_PI - a->getAngle1())*ARAD),
-                           col);
-            }
-            break;
-
-        case RS::EntityCircle: {
-                RS_Circle* c = (RS_Circle*)e;
-
-                gdImageArc(im,
-                           (int)transformX(c->getCenter().x),
-                           (int)transformY(c->getCenter().y, true),
-                           (int)transformD(c->getRadius() * 2),
-                           (int)transformD(c->getRadius() * 2),
-                           0, 360,
-                           col);
-            }
-            break;
-
-        case RS::EntityText: {
-                /*
-                DL_Text* t = (DL_Text*)e;
-
-                int brect[8];
-                gdImageStringTTF (im,
-                                  brect,
-                                  black,
-                                  "arial.ttf",
-                                  transformD (t->getHeight ()),
-                                  t->getAngle (),
-                                  (int)transformX (t->getStartpoint ().x),
-                                  (int)transformY (t->getStartpoint ().y),
-                                  t->getText ());
-                */
-            }
-            break;
-
-        default:
-            break;
-        }
-		
-		//gdImageColorDeallocate(im, col);
-
-    }
-
-    // Open a file for writing.
-    fp = fopen(outputFile, "wb");
-
-    // Output the image to the disk file in the given format.
-    switch (format) {
-    case F_PNG:
-        gdImagePng(im, fp);
-        break;
-
-    case F_JPEG:
-        gdImageJpeg(im, fp, -1);
-        break;
-
-    case F_WBMP:
-        gdImageWBMP(im, black, fp);
-        break;
-
-    default:
-        break;
-    }
-
-    // Close the file
-    fclose(fp);
-
-    // Destroy the image in memory
-    gdImageDestroy(im);
-
-    return true;
+	return false;
 }
 
 
@@ -266,17 +156,19 @@ Vec2Web::outputGd(Format format) {
  * \param handle The format handle of g2 created by a 2_open_* method.
  *               e.g. int handle = g2_open_GIF("simple.gif", 100, 100);
  */
-bool
-Vec2Web::outputG2(Format format) {
+//bool Vec2Web::outputG2(const char* format) {
+	/*
     if (format!=F_GIF && format!=F_X11 && format!=F_PS && format!=F_WIN)
         return false;
+	*/
 
+	/*
     int handle = -1;			// handle which identifies the image for g2
 
     switch (format) {
-	case F_GIF:
-		//handle = g2_open_GIF(outputFile, (int)size.x, (int)size.y);
-		break;
+    case F_GIF:
+        //handle = g2_open_GIF(outputFile, (int)size.x, (int)size.y);
+        break;
 
     case F_PS:
         handle = g2_open_PS(outputFile, g2_A4, g2_PS_land);
@@ -286,9 +178,9 @@ Vec2Web::outputG2(Format format) {
         handle = g2_open_X11((int)size.x, (int)size.y);
         break;
 
-	case F_WIN:
-		//handle = g2_open_win32((int)size.x, (int)size.y, outputFile, 0);
-		break;
+    case F_WIN:
+        //handle = g2_open_win32((int)size.x, (int)size.y, outputFile, 0);
+        break;
 
     default:
         handle = -1;
@@ -301,24 +193,24 @@ Vec2Web::outputG2(Format format) {
     for (RS_Entity* e=graphic.firstEntity(); e!=0; e=graphic.nextEntity()) {
         switch (e->rtti()) {
         case RS::EntityLine: {
-				RS_Line* l = (RS_Line*)e;
-				
-            	g2_line(handle,
-                	    transformX(l->getStartpoint().x), 
-						transformY(l->getStartpoint().y),
-                	    transformX(l->getEndpoint().x), 
-						transformY(l->getEndpoint().y));
-			}
+                RS_Line* l = (RS_Line*)e;
+
+                g2_line(handle,
+                        transformX(l->getStartpoint().x),
+                        transformY(l->getStartpoint().y),
+                        transformX(l->getEndpoint().x),
+                        transformY(l->getEndpoint().y));
+            }
             break;
 
         case RS::EntityArc: {
                 RS_Arc* a = (RS_Arc*)e;
 
                 g2_arc(handle,
-                       transformX(a->getCenter().x), 
-					   transformY(a->getCenter().y),
-                       transformD(a->getRadius()), 
-					   transformD(a->getRadius()),
+                       transformX(a->getCenter().x),
+                       transformY(a->getCenter().y),
+                       transformD(a->getRadius()),
+                       transformD(a->getRadius()),
                        a->getAngle1()*ARAD, a->getAngle2()*ARAD);
             }
             break;
@@ -327,10 +219,10 @@ Vec2Web::outputG2(Format format) {
                 RS_Circle* a = (RS_Circle*)e;
 
                 g2_ellipse(handle,
-                           transformX(a->getCenter().x), 
-						   transformY(a->getCenter().y),
-                           transformD(a->getRadius()), 
-						   transformD(a->getRadius()));
+                           transformX(a->getCenter().x),
+                           transformY(a->getCenter().y),
+                           transformD(a->getRadius()),
+                           transformD(a->getRadius()));
             }
             break;
 
@@ -342,8 +234,10 @@ Vec2Web::outputG2(Format format) {
     if (format!=F_X11 && format!=F_WIN)
         g2_close(handle);
 
-    return true;
-}
+	*/
+
+//    return true;
+//}
 
 
 /**
