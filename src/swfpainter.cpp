@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.cpp,v 1.11 2003/04/22 12:08:56 andrew23 Exp $
+**  $Id: swfpainter.cpp,v 1.12 2003/05/07 18:53:40 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -216,7 +216,16 @@ RS_Pen SWFPainter::getPen() {
 
 
 void SWFPainter::setPen(const RS_Pen& pen) {
-    width = RS::qw(pen.getWidth());
+    float w;
+    w = RS::qw(pen.getWidth());
+    w = w / 21.1;
+    if ( w < 1 ) {
+        w = 1;
+    }
+    if ( w > 10 ) {
+        w = 10;
+    }
+    width = (int)w;
     colr = pen.getColor().red();
     colg = pen.getColor().green();
     colb = pen.getColor().blue();
