@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.10 2002/11/12 17:03:32 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.11 2002/11/21 16:08:31 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -47,6 +47,7 @@ extern "C" {
 
 #ifdef SWF_SUPPORT
 #include <mingpp.h>
+#include <rs.h>
 #endif
 
 /**
@@ -125,7 +126,7 @@ bool Vec2Web::output(const char* format) {
     if ( strcmp(format, "SWF") ) {
         outputQt(format);
     } else {
-        outputMing();
+        outputMing(-1);
     }
 
     return ret;
@@ -157,6 +158,20 @@ bool Vec2Web::outputQt(const char* format) {
 	return false;
 }
 
+/**
+ * Wrapper for SWF line width conversion.
+ *
+ * \author Fabiano Weimar dos Santos (Xiru) <fabiano@x3ng.com.br>
+ */
+
+unsigned short Vec2Web::swfw(const RS::LineWidth w) {
+    unsigned short sw = (unsigned short) ( w / 2.4 );
+    if ( sw < 1 ) sw = 1;
+    if ( sw > 10 ) sw = 10;
+    std::cout << "swfw: " << sw << "\n"; 
+    return sw;
+}
+
 
 /**
  * Outputs a SWF (Shockwave Flash) object from the graphic.
@@ -164,8 +179,9 @@ bool Vec2Web::outputQt(const char* format) {
  * \author Fabiano Weimar dos Santos (Xiru) <fabiano@x3ng.com.br>
  */
 
-bool Vec2Web::outputMing() {
+bool Vec2Web::outputMing(int compressLevel=9) {
 #ifdef SWF_SUPPORT	
+
     Ming_init();
 
     SWFMovie *movie = new SWFMovie();
@@ -179,7 +195,7 @@ bool Vec2Web::outputMing() {
 	SWFShape *shape = new SWFShape();
 
 	RS_Color c = e->getPen().getColor();
-        shape->setLine( (unsigned short)1, (int)c.red(), (int)c.green(), (int)c.blue() );
+        shape->setLine( swfw(e->getPen().getWidth()), (int)c.red(), (int)c.green(), (int)c.blue() ); 
 
         switch ( e->rtti() ) {
 		
@@ -221,7 +237,7 @@ bool Vec2Web::outputMing() {
 		
     }
 
-    movie->save(outputFile);
+    movie->save(outputFile,compressLevel);
 
     return true;
 #else
