@@ -147,7 +147,7 @@ Vec2Web::outputGd (Format format)
 	white = gdImageColorAllocate(im, 255, 255, 255);
 	black = gdImageColorAllocate(im, 0, 0, 0);
 	
-	for (DL_Entity* e = graphic.first(); e != 0; e = graphic.next())
+	for (DL_Entity* e = graphic.firstSingle(); e != 0; e = graphic.nextSingle())
 	{
 		switch (e->rtti ()) {
 			case DL_ENTITY_LINE:
@@ -158,7 +158,7 @@ Vec2Web::outputGd (Format format)
 										 (int)transformY (e->getEndPoint().y, true),
 										 black);
 				break;
-				
+
 			case DL_ENTITY_ARC: {
 				DL_Arc* a = (DL_Arc*)e;
 				
