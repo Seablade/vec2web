@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.8 2002/11/10 15:07:41 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.9 2002/11/12 16:04:26 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -45,6 +45,7 @@ extern "C" {
 
 #include <ctype.h>
 
+#include <mingpp.h>
 
 /**
  * Default constructor.
@@ -92,7 +93,8 @@ void Vec2Web::convert() {
 		extension[i] = toupper(extension[i]);
 	}
 
-	output(extension);
+        output(extension);
+    
 }
 
 
@@ -118,7 +120,11 @@ bool Vec2Web::output(const char* format) {
     offset.set(10 - (int)(graphic.getMin().x * factor),
                10 - (int)(graphic.getMin().y * factor));
 
-	outputQt(format);
+    if ( strcmp(format, "SWF") ) {
+        outputQt(format);
+    } else {
+        outputMing();
+    }
 
     return ret;
 }
@@ -147,6 +153,75 @@ bool Vec2Web::outputQt(const char* format) {
 	}
 
 	return false;
+}
+
+
+/**
+ * Outputs a SWF (Shockwave Flash) object from the graphic.
+ *
+ * \author Fabiano Weimar dos Santos (Xiru) <fabiano@x3ng.com.br>
+ */
+
+bool Vec2Web::outputMing() {
+	
+    Ming_init();
+
+    SWFMovie *movie = new SWFMovie();
+
+    movie->setDimension( (float)size.x, (float)size.y );
+
+    movie->setBackground( (int)255, (int)255, (int)255 );   // White
+    
+    for ( RS_Entity* e=graphic.firstEntity(); e!=0; e=graphic.nextEntity() ) {
+
+	SWFShape *shape = new SWFShape();
+
+	RS_Color c = e->getPen().getColor();
+        shape->setLine( (unsigned short)1, (int)c.red(), (int)c.green(), (int)c.blue() );
+
+        switch ( e->rtti() ) {
+		
+        case RS::EntityLine: {
+                RS_Line* l = (RS_Line*)e;
+		shape->movePenTo( (float)transformX(l->getStartpoint().x),
+				  (float)transformY(l->getStartpoint().y, true) );
+		shape->drawLineTo( (float)transformX(l->getEndpoint().x),
+				   (float)transformY(l->getEndpoint().y, true) );
+		movie->add( shape );
+            }
+            break;
+
+        case RS::EntityCircle: {
+                RS_Circle* c = (RS_Circle*)e;
+		shape->movePenTo( (float)transformX(c->getCenter().x),
+				  (float)transformY(c->getCenter().y, true) );
+		shape->drawCircle( (float)transformD(c->getRadius()) );
+		movie->add( shape );
+            }
+            break;
+
+        case RS::EntityArc: {
+                RS_Arc* a = (RS_Arc*)e;
+		float a1, a2;
+		shape->movePenTo( (float)transformX(a->getCenter().x),
+				  (float)transformY(a->getCenter().y, true) );
+		a1 = (float)( ( M_PI * 2 - a->getAngle1() ) * ARAD + 90 );
+		a2 = (float)( ( M_PI * 2 - a->getAngle2() ) * ARAD + 90 );
+		if ( a2 > a1 ) a1 += 360;
+		shape->drawArc( (float)transformD(a->getRadius()), a2, a1 );
+		movie->add( shape ); 
+            }
+	    break;
+
+        default:
+            break;
+        }
+		
+    }
+
+    movie->save(outputFile);
+
+    return true;
 }
 
 
