@@ -8,7 +8,8 @@ win32 {
 }
 INCLUDEPATH += ../../dxflib/include ../../qcadlib/include ../../qcadguiqt/include
 exists(../../ming/libming.a) {
-	LIBS        += -L../../ming -lming
+	#LIBS        += -L../../ming -lming
+	LIBS        += -L../../ming/libming.a
 	INCLUDEPATH += ../../ming
 	DEFINES     += SWF_SUPPORT
 }

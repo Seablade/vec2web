@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: main.cpp,v 1.4 2002/11/10 15:09:13 andrew23 Exp $
+**  $Id: main.cpp,v 1.5 2003/01/23 20:22:30 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -22,6 +22,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "vec2web.h"
+
+#include "rs_system.h"
+#include "rs_fontlist.h"
 
 #include <qapplication.h>
 
@@ -58,6 +61,9 @@ int main(int argc, char** argv) {
         }
 
     	QApplication a(argc, argv);
+
+		RS_SYSTEM->init("vec2web", "vec2web");
+	    RS_FONTLIST->init();
 
         Vec2Web v2w;
         v2w.setInputFile(argv[1]);

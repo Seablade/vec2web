@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: graphicview.cpp,v 1.1 2002/11/10 15:07:41 andrew23 Exp $
+**  $Id: graphicview.cpp,v 1.2 2003/01/23 20:22:30 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -37,9 +37,11 @@
 GraphicView::GraphicView(int w, int h) {
 
     setBackground(RS_Color(255,255,255));
+    //setBackground(RS_Color(0,0,0));
     buffer = NULL;
 	width = w;
 	height = h;
+	setBorders(5, 5, 5, 5);
 }
 
 
