@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: graphicview.h,v 1.2 2003/02/12 21:54:13 andrew23 Exp $
+**  $Id: graphicview.h,v 1.3 2003/03/04 18:15:12 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -67,6 +67,8 @@ public:
     virtual RS_Layer* requestEditLayerDialog(RS_LayerList* ) {
         return NULL;
     }
+    virtual RS_String requestFileSaveAsDialog() { return ""; }
+    virtual RS_String requestFileOpenDialog() { return ""; }
 
     virtual void updateCoordinateWidget(const RS_Vector& ,
                                         const RS_Vector& ) {}
