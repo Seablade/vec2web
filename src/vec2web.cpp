@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.9 2002/11/12 16:04:26 xiru Exp $
+**  $Id: vec2web.cpp,v 1.10 2002/11/12 17:03:32 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -45,7 +45,9 @@ extern "C" {
 
 #include <ctype.h>
 
+#ifdef SWF_SUPPORT
 #include <mingpp.h>
+#endif
 
 /**
  * Default constructor.
@@ -163,7 +165,7 @@ bool Vec2Web::outputQt(const char* format) {
  */
 
 bool Vec2Web::outputMing() {
-	
+#ifdef SWF_SUPPORT	
     Ming_init();
 
     SWFMovie *movie = new SWFMovie();
@@ -222,6 +224,10 @@ bool Vec2Web::outputMing() {
     movie->save(outputFile);
 
     return true;
+#else
+	std::cerr << "No SWF Support compiled.\n";
+	return false;
+#endif
 }
 
 
