@@ -1,4 +1,5 @@
 #!/bin/sh
+# $Id: vec2web_install.sh,v 1.2 2003/01/23 20:59:41 andrew23 Exp $
 # vec2web installation from CVS for sf.net registered developers and 
 # anonymous users
 
@@ -41,7 +42,7 @@ fi
 # VEC2WEB_MING enable user to build vec2web with SWF (Shockwave Flash)
 # file format support. 
 
-VEC2WEB_MING="n"
+VEC2WEB_MING="y"
 
 echo
 echo "vec2web can generate SWF (Shockwave Flash) movies using the ming library (http://ming.sourceforge.net)."
