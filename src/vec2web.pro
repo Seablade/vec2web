@@ -14,9 +14,11 @@ exists(../../ming/libming.a) {
 	DEFINES     += SWF_SUPPORT
 }
 HEADERS		= vec2web.h \
-              graphicview.h
+              graphicview.h \
+			  swfpainter.h
 SOURCES		= vec2web.cpp \
               graphicview.cpp \
+			  swfpainter.cpp \
               main.cpp 
 DESTDIR     = ..
 TARGET		= vec2web

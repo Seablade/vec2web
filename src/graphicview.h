@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: graphicview.h,v 1.1 2002/11/10 15:07:41 andrew23 Exp $
+**  $Id: graphicview.h,v 1.2 2003/02/12 21:54:13 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -42,46 +42,46 @@
  */
 class GraphicView: public RS_GraphicView {
 public:
-    GraphicView(int w, int h);
+    GraphicView(int w, int h, RS_Painter* p);
     virtual ~GraphicView();
 
-	virtual int getWidth();
-	virtual int getHeight();
-	virtual void redraw() {}
-	virtual void adjustOffsetControls() {}
-	virtual void adjustZoomControls() {}
+    virtual int getWidth();
+    virtual int getHeight();
+    virtual void redraw() {}
+    virtual void adjustOffsetControls() {}
+    virtual void adjustZoomControls() {}
     virtual RS_Painter* createPainter();
     virtual RS_Painter* createDirectPainter();
     virtual void destroyPainter();
-	virtual void setMouseCursor(RS::CursorType ) {}
+    virtual void setMouseCursor(RS::CursorType ) {}
 
-	virtual void emulateMouseMoveEvent() {}
+    virtual void emulateMouseMoveEvent() {}
 
     virtual void requestWarningDialog(const RS_String& ) {}
-    virtual RS_Layer* requestNewLayerDialog() { return NULL; }
-    virtual RS_Layer* requestLayerRemovalDialog(RS_LayerList* = NULL) { return NULL; }
-    virtual RS_Layer* requestEditLayerDialog(RS_LayerList* ) { return NULL; }
-	
-	virtual void updateCoordinateWidget(const RS_Vector& ,
-	                                    const RS_Vector& ) {}
-	virtual void updateMouseWidget(const RS_String& ,
-	                               const RS_String& ) {}
+    virtual RS_Layer* requestNewLayerDialog() {
+        return NULL;
+    }
+    virtual RS_Layer* requestLayerRemovalDialog(RS_LayerList* = NULL) {
+        return NULL;
+    }
+    virtual RS_Layer* requestEditLayerDialog(RS_LayerList* ) {
+        return NULL;
+    }
+
+    virtual void updateCoordinateWidget(const RS_Vector& ,
+                                        const RS_Vector& ) {}
+    virtual void updateMouseWidget(const RS_String& ,
+                                   const RS_String& ) {}
 
 
-	void paint();
-	QPixmap* getBuffer() {
-		return buffer;
-	}
+    void paint();
 
 private:
-	//! Buffer
-	QPixmap* buffer;
+    //! Width
+    int width;
 
-	//! Width
-	int width;
-
-	//! Height
-	int height;
+    //! Height
+    int height;
 };
 
 #endif

@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: graphicview.cpp,v 1.2 2003/01/23 20:22:30 andrew23 Exp $
+**  $Id: graphicview.cpp,v 1.3 2003/02/12 21:54:13 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -34,25 +34,20 @@
  * @param w Width
  * @param h Height
  */
-GraphicView::GraphicView(int w, int h) {
+GraphicView::GraphicView(int w, int h, RS_Painter* p) {
 
     setBackground(RS_Color(255,255,255));
-    //setBackground(RS_Color(0,0,0));
-    buffer = NULL;
-	width = w;
-	height = h;
-	setBorders(5, 5, 5, 5);
+    width = w;
+    height = h;
+    painter = p;
+    setBorders(5, 5, 5, 5);
 }
 
 
 /**
  * Destructor
  */
-GraphicView::~GraphicView() {
-	if (buffer!=NULL) {
-		delete buffer;
-	}
-}
+GraphicView::~GraphicView() {}
 
 
 /**
@@ -77,21 +72,6 @@ int GraphicView::getHeight() {
  * points to that object.
  */
 RS_Painter* GraphicView::createPainter() {
-    RS_DEBUG->print("GraphicView::createPainter begin");
-
-    if (buffer==NULL) {
-		RS_DEBUG->timestamp();
-		RS_DEBUG->print("creating buffer: %d,%d", getWidth(), getHeight());
-        buffer = new QPixmap(getWidth(), getHeight());
-		RS_DEBUG->timestamp();
-		RS_DEBUG->print("ok");
-    }
-    painter = new QG_Painter(buffer);
-    ((QG_Painter*)painter)->setBackgroundColor(background);
-    ((QG_Painter*)painter)->eraseRect(0,0,getWidth(), getHeight());
-
-    RS_DEBUG->print("GraphicView::createPainter end");
-
     return painter;
 }
 
@@ -102,29 +82,14 @@ RS_Painter* GraphicView::createPainter() {
  * points to that object.
  */
 RS_Painter* GraphicView::createDirectPainter() {
-
-    RS_DEBUG->print("GraphicView::createDirectPainter begin");
-
-	return createPainter();
-
-    RS_DEBUG->print("GraphicView::createDirectPainter end");
+    return createPainter();
 }
 
 
 /**
  * Deletes the painter.
  */
-void GraphicView::destroyPainter() {
-
-    RS_DEBUG->print("GraphicView::destroyPainter begin");
-
-    if (painter!=NULL) {
-        delete painter;
-        painter = NULL;
-    }
-
-    RS_DEBUG->print("GraphicView::destroyPainter end");
-}
+void GraphicView::destroyPainter() {}
 
 
 
@@ -133,13 +98,7 @@ void GraphicView::destroyPainter() {
  */
 void GraphicView::paint() {
     RS_DEBUG->print("GraphicView::paint begin");
-    if (buffer!=NULL) {
-        delete buffer;
-        buffer = NULL;
-    }
-
     drawIt();
-
     RS_DEBUG->print("GraphicView::paint end");
 }
 

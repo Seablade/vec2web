@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.23 2003/02/12 16:41:49 xiru Exp $
+**  $Id: vec2web.cpp,v 1.24 2003/02/12 21:54:14 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -36,8 +36,9 @@
 #include <ctype.h>
 
 #ifdef SWF_SUPPORT
-#include <mingpp.h>
+//#include <mingpp.h>
 #include <rs.h>
+#include "swfpainter.h"
 #endif
 
 
@@ -111,7 +112,8 @@ bool Vec2Web::output(const char* format) {
                10 - (int)(graphic.getMin().y * factor));
 
     if ( ! strcmp(format, "SWF") ) {
-        outputMing(9);
+        //outputMing(9);
+        outputMing2(9);
     } else if ( ! strcmp(format, "DXML") ) {
         outputDXML();
     } else {
@@ -126,23 +128,35 @@ bool Vec2Web::output(const char* format) {
  * Outputs a png image from the graphic.
  */
 bool Vec2Web::outputQt(const char* format) {
-    GraphicView gv((int)maxSize.x, (int)maxSize.y);
+
+    bool ret = false;
+
+    QPixmap* buffer = new QPixmap((int)maxSize.x, (int)maxSize.y);
+    QG_Painter* painter = new QG_Painter(buffer);
+    painter->setBackgroundColor(RS_Color(255,255,255));
+    painter->eraseRect(0,0, (int)maxSize.x, (int)maxSize.y);
+
+    GraphicView gv((int)maxSize.x, (int)maxSize.y, painter);
+
     gv.setContainer(&graphic);
     gv.zoomAuto();
     gv.drawEntity(&graphic, false, true);
-    QPixmap* buffer = gv.getBuffer();
-    if (buffer!=NULL) {
-        QImageIO iio;
-        QImage img;
-        img = *buffer;
-        iio.setImage(img);
-        iio.setFileName(outputFile);
-        iio.setFormat(format);
-        if (iio.write()) {
-            return true;
-        }
+
+    QImageIO iio;
+    QImage img;
+    img = *buffer;
+    iio.setImage(img);
+    iio.setFileName(outputFile);
+    iio.setFormat(format);
+    if (iio.write()) {
+        ret = true;
     }
-    return false;
+
+    // GraphicView deletes painter
+    painter->end();
+    delete buffer;
+
+    return ret;
 }
 
 
@@ -164,17 +178,68 @@ unsigned short Vec2Web::swfw(const RS::LineWidth w) {
 }
 
 
+
+bool Vec2Web::outputMing2(int compressLevel) {
+#ifdef SWF_SUPPORT
+
+    Ming_init();
+
+    SWFMovie *movie = new SWFMovie();
+    movie->setDimension((float)(maxSize.x), (float)(maxSize.y));
+    movie->setBackground((int)255, (int)255, (int)255);   // White
+
+    SWFPainter* painter= new SWFPainter(movie);
+    GraphicView gv((int)maxSize.x, (int)maxSize.y, painter);
+    gv.setContainer(&graphic);
+    gv.zoomAuto();
+    gv.drawEntity(&graphic, false, true);
+
+    //SWFPainter p(movie);
+    //gv.drawIt();
+
+    movie->save(outputFile);
+
+    return true;
+#else
+
+    std::cerr << "No SWF Support compiled.\n";
+    return false;
+#endif
+}
+
+
+
+
 /**
  * Outputs a SWF (Shockwave Flash) object from the graphic.
  *
  * \author Fabiano Weimar dos Santos (Xiru) <fabiano@x3ng.com.br>
  */
-
 bool Vec2Web::outputMing(int compressLevel) {
 
 #ifdef SWF_SUPPORT
 
     Ming_init();
+
+    //SWFMovie *movie = new SWFMovie();
+
+    //movie->setDimension( 100,100 );
+    //movie->setBackground( 255, 255, 255 );   // White
+
+    //SWFShape* shape = new SWFShape();
+    /*
+    shape->setLine(2, 1, 1, 1);
+    shape->movePenTo(50,50);
+    shape->drawLineTo(60,80);
+    shape->drawLineTo(60,-60);
+    shape->drawLineTo(-60,-60);
+    shape->drawLineTo(60,60);
+    */
+    //movie->add(shape);
+    //movie->nextFrame();
+    //movie->save(outputFile);
+    //delete shape;
+    //delete movie;
 
     SWFMovie *movie = new SWFMovie();
 
@@ -186,12 +251,13 @@ bool Vec2Web::outputMing(int compressLevel) {
 
         SWFShape *shape = new SWFShape();
 
-        //RS_Color c = e->getPen().getColor();
+        RS_Color c = e->getPen().getColor();
         //shape->setLine( swfw(e->getPen().getWidth()), (int)c.red(), (int)c.green(), (int)c.blue() );
-        shape->setLine( 1, 0, 0, 0 );  // Debuging...
+        shape->setLine( 1, (int)c.red(), (int)c.green(), (int)c.blue() );
+        //shape->setLine( 1, 0, 0, 0 );  // Debuging...
 
         switch ( e->rtti() ) {
-		
+
         case RS::EntityPoint: {
                 RS_Point* p = (RS_Point*)e;
                 shape->movePenTo( (float)transformX(p->getPos().x - 1),
@@ -216,14 +282,15 @@ bool Vec2Web::outputMing(int compressLevel) {
             }
             break;
 
-	case RS::EntityDimAligned: 
-	case RS::EntityDimLinear: 
-	case RS::EntityText: 
+        case RS::EntityInsert:
+        case RS::EntityDimAligned:
+        case RS::EntityDimLinear:
+        case RS::EntityText:
         case RS::EntityPolyline: {
                 RS_Polyline* l = (RS_Polyline*)e;
                 bool first = true;
                 for ( RS_Entity* v=l->firstEntity(RS::ResolveNone); v!=NULL;
-                      v=l->nextEntity(RS::ResolveNone) ) {
+                        v=l->nextEntity(RS::ResolveNone) ) {
                     if (v->rtti()==RS::EntityLine) {
                         RS_Line* l = (RS_Line*)v;
                         if (first) {
@@ -282,7 +349,8 @@ bool Vec2Web::outputMing(int compressLevel) {
 
     }
 
-    movie->save(outputFile,compressLevel);
+    //movie->save(outputFile,compressLevel);
+    movie->save(outputFile);
 
     return true;
 
@@ -290,7 +358,7 @@ bool Vec2Web::outputMing(int compressLevel) {
 
     std::cerr << "No SWF Support compiled.\n";
     return false;
-    
+
 #endif
 
 }
@@ -321,79 +389,79 @@ bool Vec2Web::outputDXML() {
     dxml = fopen(outputFile, "w");
 
     fprintf(dxml, "<draw x=\"%i\" y=\"%i\">\n", (int)maxSize.x, (int)maxSize.y);
-	
+
     for ( RS_Entity* e=graphic.firstEntity(); e!=0; e=graphic.nextEntity() ) {
 
         switch ( e->rtti() ) {
-		
+
         case RS::EntityPoint: {
                 RS_Point* p = (RS_Point*)e;
-		fprintf(dxml, "  <point x=\"%f\" y=\"%f\" \\>\n",
-		    transformX(p->getPos().x), transformY(p->getPos().y));
+                fprintf(dxml, "  <point x=\"%f\" y=\"%f\" \\>\n",
+                        transformX(p->getPos().x), transformY(p->getPos().y));
             }
             break;
 
         case RS::EntityLine: {
                 RS_Line* l = (RS_Line*)e;
-		fprintf(dxml, "  <line x0=\"%f\" y0=\"%f\" x1=\"%f\" y1=\"%f\" \\>\n",
-		    transformX(l->getStartpoint().x), transformY(l->getStartpoint().y, true),
-		    transformX(l->getEndpoint().x), transformY(l->getEndpoint().y, true));
+                fprintf(dxml, "  <line x0=\"%f\" y0=\"%f\" x1=\"%f\" y1=\"%f\" \\>\n",
+                        transformX(l->getStartpoint().x), transformY(l->getStartpoint().y, true),
+                        transformX(l->getEndpoint().x), transformY(l->getEndpoint().y, true));
             }
             break;
 
-//	case RS::EntityDimAligned: 
-//	case RS::EntityDimLinear: 
-//	case RS::EntityText: 
+            //	case RS::EntityDimAligned:
+            //	case RS::EntityDimLinear:
+            //	case RS::EntityText:
         case RS::EntityPolyline: {
                 RS_Polyline* l = (RS_Polyline*)e;
                 bool first = true;
-		if (! l->isClosed()) {
-		    fprintf(dxml, "  <polyline>\n");
-		} else {
-		    fprintf(dxml, "  <polyline closed=\"closed\">\n");
-		}
+                if (! l->isClosed()) {
+                    fprintf(dxml, "  <polyline>\n");
+                } else {
+                    fprintf(dxml, "  <polyline closed=\"closed\">\n");
+                }
                 for ( RS_Entity* v=l->firstEntity(RS::ResolveNone); v!=NULL;
-                      v=l->nextEntity(RS::ResolveNone) ) {
+                        v=l->nextEntity(RS::ResolveNone) ) {
                     if (v->rtti()==RS::EntityLine) {
                         RS_Line* l = (RS_Line*)v;
-			if (first) {
-		            fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" \\>\n",
-		                transformX(l->getStartpoint().x), transformY(l->getStartpoint().y, true));
-		            first = false;
-			}
-		        fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" \\>\n",
-		            transformX(l->getEndpoint().x), transformY(l->getEndpoint().y, true));
+                        if (first) {
+                            fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" \\>\n",
+                                    transformX(l->getStartpoint().x), transformY(l->getStartpoint().y, true));
+                            first = false;
+                        }
+                        fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" \\>\n",
+                                transformX(l->getEndpoint().x), transformY(l->getEndpoint().y, true));
                     } else if (v->rtti()==RS::EntityArc) {
                         RS_Arc* a = (RS_Arc*)v;
-			if (first) {
-		            fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" \\>\n",
-		                transformX(a->getStartpoint().x), transformY(a->getStartpoint().y, true));
-		            first = false;
-			}
-		        fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" bulge=\"%f\" \\>\n",
-		            transformX(a->getEndpoint().x), transformY(a->getEndpoint().y, true), a->getBulge());
+                        if (first) {
+                            fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" \\>\n",
+                                    transformX(a->getStartpoint().x), transformY(a->getStartpoint().y, true));
+                            first = false;
+                        }
+                        fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" bulge=\"%f\" \\>\n",
+                                transformX(a->getEndpoint().x), transformY(a->getEndpoint().y, true), a->getBulge());
                     }
                 }
-		fprintf(dxml, "  </polyline>\n");
+                fprintf(dxml, "  </polyline>\n");
             }
             break;
 
         case RS::EntityCircle: {
                 RS_Circle* c = (RS_Circle*)e;
-		fprintf(dxml, "  <circle x=\"%f\" y=\"%f\" radius=\"%f\" \\>\n",
-		    transformX(c->getCenter().x), transformY(c->getCenter().y, true), transformD(c->getRadius()));
+                fprintf(dxml, "  <circle x=\"%f\" y=\"%f\" radius=\"%f\" \\>\n",
+                        transformX(c->getCenter().x), transformY(c->getCenter().y, true), transformD(c->getRadius()));
             }
             break;
 
         case RS::EntityArc: {
                 RS_Arc* a = (RS_Arc*)e;
-		fprintf(dxml, "  <arc x=\"%f\" y=\"%f\" radius=\"%f\" angle0=\"%f\" angle1=\"%f\" \\>\n",
-	            transformX(a->getCenter().x), transformY(a->getCenter().y, true), transformD(a->getRadius()), 
-		    a->getAngle1(), a->getAngle2());
+                fprintf(dxml, "  <arc x=\"%f\" y=\"%f\" radius=\"%f\" angle0=\"%f\" angle1=\"%f\" \\>\n",
+                        transformX(a->getCenter().x), transformY(a->getCenter().y, true), transformD(a->getRadius()),
+                        a->getAngle1(), a->getAngle2());
             }
             break;
-        
-	default:
+
+        default:
             break;
         }
 
