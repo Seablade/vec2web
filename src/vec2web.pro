@@ -11,23 +11,31 @@ win32 {
 	               ../../qcadlib/lib/qcad.lib \
 				   ../../dxflib/lib/dxflib.lib
 }
-
 INCLUDEPATH += ../../dxflib/include \
                ../../qcadlib/include \
 			   ../../qcadguiqt/include
+
+unix {
+	exists(../../ming/libming.a) {
+		#LIBS        += -L../../ming -lming
+		LIBS        += ../../ming/libming.a
+		INCLUDEPATH += ../../ming
+		DEFINES     += SWF_SUPPORT
+	}
+}
+win32 {
+	exists(../../ming/win32/debug/libming.lib)
+		LIBS += ../../ming/win32/debug/libming.lib
+		INCLUDEPATH += ../../ming
+		DEFINES     += SWF_SUPPORT
+	}
+}
 
 # detect Qt:
 exists( $$(QTDIR)/lib/libqt-mt.so ) {
 	CONFIG += thread
 }
 
-# detect Ming:
-exists(../../ming/libming.a) {
-	#LIBS        += -L../../ming -lming
-	LIBS        += ../../ming/libming.a
-	INCLUDEPATH += ../../ming
-	DEFINES     += SWF_SUPPORT
-}
 
 HEADERS		= vec2web.h \
               graphicview.h \

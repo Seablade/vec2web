@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.31 2003/05/03 19:15:22 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.32 2003/05/10 15:03:21 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -168,9 +168,6 @@ bool Vec2Web::outputQt(const char* format) {
 
 
 bool Vec2Web::outputMing(int compressLevel) {
-
-#ifdef SWF_SUPPORT
-
     Ming_init();
 
     SWFMovie *movie = new SWFMovie();
