@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.5 2002/09/23 01:49:28 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.6 2002/09/23 01:56:53 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -224,6 +224,8 @@ Vec2Web::outputGd(Format format) {
         default:
             break;
         }
+		
+		//gdImageColorDeallocate(im, col);
 
     }
 
