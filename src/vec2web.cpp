@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.26 2003/02/13 21:08:15 xiru Exp $
+**  $Id: vec2web.cpp,v 1.27 2003/02/14 00:08:33 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -19,24 +19,21 @@
 ******************************************************************************/
 
 #include "vec2web.h"
-
 #include "graphicview.h"
-
 #include "dl_creationinterface.h"
 #include "dl_dxf.h"
-
 #include "rs_creation.h"
 #include "rs_color.h"
 #include "rs_graphic.h"
 #include "rs_import.h"
 #include "rs_system.h"
+#include "rs.h"
+#include "dxmlpainter.h"
 
 #include <qimage.h>
-
 #include <ctype.h>
 
 #ifdef SWF_SUPPORT
-#include <rs.h>
 #include "swfpainter.h"
 #endif
 
@@ -159,6 +156,7 @@ bool Vec2Web::outputQt(const char* format) {
 
 
 bool Vec2Web::outputMing(int compressLevel) {
+	
 #ifdef SWF_SUPPORT
 
     Ming_init();
@@ -176,11 +174,14 @@ bool Vec2Web::outputMing(int compressLevel) {
     movie->save(outputFile, compressLevel);
 
     return true;
+    
 #else
 
     std::cerr << "No SWF Support compiled.\n";
     return false;
+    
 #endif
+    
 }
 
 
@@ -189,14 +190,10 @@ bool Vec2Web::outputMing(int compressLevel) {
  *
  * Example:
  *
- * <draw x="200" y="200">
+ * <draw>
  *   <point x="123" y="123" \>
  *   <line x0="123" y0="123" x1="123" y1="123" \>
  *   <circle x="123" y="123" radius="123" \>
- *   <polyline closed="closed">
- *     <vertex x="123" y="123" \>
- *     <vertex x="123" y="123" bulge="1" \>
- *   </polyline>
  *   <arc x="123" y="123" radius="123" angle0="123" angle1="123" \>
  * </draw>
  * 
@@ -205,89 +202,11 @@ bool Vec2Web::outputMing(int compressLevel) {
 
 bool Vec2Web::outputDXML() {
 
-    FILE *dxml;
-
-    dxml = fopen(outputFile, "w");
-
-    fprintf(dxml, "<draw x=\"%i\" y=\"%i\">\n", (int)maxSize.x, (int)maxSize.y);
-
-    for ( RS_Entity* e=graphic.firstEntity(); e!=0; e=graphic.nextEntity() ) {
-
-        switch ( e->rtti() ) {
-
-        case RS::EntityPoint: {
-                RS_Point* p = (RS_Point*)e;
-                fprintf(dxml, "  <point x=\"%f\" y=\"%f\" \\>\n",
-                        transformX(p->getPos().x), transformY(p->getPos().y));
-            }
-            break;
-
-        case RS::EntityLine: {
-                RS_Line* l = (RS_Line*)e;
-                fprintf(dxml, "  <line x0=\"%f\" y0=\"%f\" x1=\"%f\" y1=\"%f\" \\>\n",
-                        transformX(l->getStartpoint().x), transformY(l->getStartpoint().y, true),
-                        transformX(l->getEndpoint().x), transformY(l->getEndpoint().y, true));
-            }
-            break;
-
-        case RS::EntityPolyline: {
-                RS_Polyline* l = (RS_Polyline*)e;
-                bool first = true;
-                if (! l->isClosed()) {
-                    fprintf(dxml, "  <polyline>\n");
-                } else {
-                    fprintf(dxml, "  <polyline closed=\"closed\">\n");
-                }
-                for ( RS_Entity* v=l->firstEntity(RS::ResolveNone); v!=NULL;
-                        v=l->nextEntity(RS::ResolveNone) ) {
-                    if (v->rtti()==RS::EntityLine) {
-                        RS_Line* l = (RS_Line*)v;
-                        if (first) {
-                            fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" \\>\n",
-                                    transformX(l->getStartpoint().x), transformY(l->getStartpoint().y, true));
-                            first = false;
-                        }
-                        fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" \\>\n",
-                                transformX(l->getEndpoint().x), transformY(l->getEndpoint().y, true));
-                    } else if (v->rtti()==RS::EntityArc) {
-                        RS_Arc* a = (RS_Arc*)v;
-                        if (first) {
-                            fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" \\>\n",
-                                    transformX(a->getStartpoint().x), transformY(a->getStartpoint().y, true));
-                            first = false;
-                        }
-                        fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" bulge=\"%f\" \\>\n",
-                                transformX(a->getEndpoint().x), transformY(a->getEndpoint().y, true), a->getBulge());
-                    }
-                }
-                fprintf(dxml, "  </polyline>\n");
-            }
-            break;
-
-        case RS::EntityCircle: {
-                RS_Circle* c = (RS_Circle*)e;
-                fprintf(dxml, "  <circle x=\"%f\" y=\"%f\" radius=\"%f\" \\>\n",
-                        transformX(c->getCenter().x), transformY(c->getCenter().y, true), transformD(c->getRadius()));
-            }
-            break;
-
-        case RS::EntityArc: {
-                RS_Arc* a = (RS_Arc*)e;
-                fprintf(dxml, "  <arc x=\"%f\" y=\"%f\" radius=\"%f\" angle0=\"%f\" angle1=\"%f\" \\>\n",
-                        transformX(a->getCenter().x), transformY(a->getCenter().y, true), transformD(a->getRadius()),
-                        a->getAngle1(), a->getAngle2());
-            }
-            break;
-
-        default:
-            break;
-        }
-
-    }
-
-    fprintf(dxml, "</draw>\n");
-
-    fclose(dxml);
+    DXMLPainter* painter= new DXMLPainter(outputFile);
+    GraphicView gv((int)maxSize.x, (int)maxSize.y, painter);
+    gv.setContainer(&graphic);
+    gv.zoomAuto();
+    gv.drawEntity(&graphic, false, true);
 
     return true;
 

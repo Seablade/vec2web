@@ -15,10 +15,12 @@ exists(../../ming/libming.a) {
 }
 HEADERS		= vec2web.h \
               graphicview.h \
-			  swfpainter.h
+			  swfpainter.h \
+			  dxmlpainter.h
 SOURCES		= vec2web.cpp \
               graphicview.cpp \
 			  swfpainter.cpp \
+			  dxmlpainter.cpp \
               main.cpp 
 DESTDIR     = ..
 TARGET		= vec2web
