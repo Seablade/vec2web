@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: main.cpp,v 1.7 2003/02/28 19:05:00 andrew23 Exp $
+**  $Id: main.cpp,v 1.8 2003/04/22 12:08:55 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -41,73 +41,69 @@ int main(int argc, char** argv) {
     // Load DXF file into memory and convert it to whatever:
     else {
         int c=1;                     // argument counter
-        double width=256;            // arg: width  
+        double width=256;            // arg: width
         double height=256;           // arg: height
-		bool blackWhite = false;     // arg: b/w instead of colors
-		QPrinter::Orientation orientation = QPrinter::Landscape;
-		QPrinter::PageSize pageSize = QPrinter::A4;
+        bool blackWhite = false;     // arg: b/w instead of colors
+        QPrinter::Orientation orientation = QPrinter::Landscape;
+        QPrinter::PageSize pageSize = QPrinter::A4;
 
         // parse arguments:
         while (c<argc) {
-			// width:
+            // width:
             if (c<argc-1 &&
-                    (!strcmp(argv[c], "--maxx") || 
-					!strcmp(argv[c], "-x") ||
-					!strcmp(argv[c], "--width") ||
-					!strcmp(argv[c], "-w"))) {
+                    (!strcmp(argv[c], "--maxx") ||
+                     !strcmp(argv[c], "-x") ||
+                     !strcmp(argv[c], "--width") ||
+                     !strcmp(argv[c], "-w"))) {
                 ++c;
                 width = atof(argv[c]);
-            } 
-			// height:
-			else if (c<argc-1 &&
-                       (!strcmp(argv[c], "--maxy") || 
-					   !strcmp(argv[c], "-y") ||
-					   !strcmp(argv[c], "--height") ||
-					   !strcmp(argv[c], "-h"))) {
+            }
+            // height:
+            else if (c<argc-1 &&
+                     (!strcmp(argv[c], "--maxy") ||
+                      !strcmp(argv[c], "-y") ||
+                      !strcmp(argv[c], "--height") ||
+                      !strcmp(argv[c], "-h"))) {
                 ++c;
                 height = atof(argv[c]);
-            } 
-			// blackwhite:
-			else if (!strcmp(argv[c], "--blackwhite") || 
-			           !strcmp(argv[c], "-b")) {
-				blackWhite = true;
-			} 
-			// page orientation for PS
-			else if (c<argc-1 &&
-			           (!strcmp(argv[c], "--orientation") ||
-			           !strcmp(argv[c], "-o"))) {
+            }
+            // blackwhite:
+            else if (!strcmp(argv[c], "--blackwhite") ||
+                     !strcmp(argv[c], "-b")) {
+                blackWhite = true;
+            }
+            // page orientation for PS
+            else if (c<argc-1 &&
+                     (!strcmp(argv[c], "--orientation") ||
+                      !strcmp(argv[c], "-o"))) {
                 ++c;
-				if (!strcmp(argv[c], "landscape") || 
-				    !strcmp(argv[c], "l")) {
-					orientation = QPrinter::Landscape;
-				}
-				else if (!strcmp(argv[c], "portrait") ||
-				         !strcmp(argv[c], "p")) {
-					orientation = QPrinter::Portrait;
-				}
-				else {
-					std::cerr << "unknown paper orientation\n";
-					exit(1);
-				}
-			}
-			// page size for PS
-			else if (c<argc-1 &&
-			           (!strcmp(argv[c], "--size") ||
-			           !strcmp(argv[c], "-s"))) {
+                if (!strcmp(argv[c], "landscape") ||
+                        !strcmp(argv[c], "l")) {
+                    orientation = QPrinter::Landscape;
+                } else if (!strcmp(argv[c], "portrait") ||
+                           !strcmp(argv[c], "p")) {
+                    orientation = QPrinter::Portrait;
+                } else {
+                    std::cerr << "unknown paper orientation\n";
+                    exit(1);
+                }
+            }
+            // page size for PS
+            else if (c<argc-1 &&
+                     (!strcmp(argv[c], "--size") ||
+                      !strcmp(argv[c], "-s"))) {
                 ++c;
-				if (!strcmp(argv[c], "a4") || 
-				    !strcmp(argv[c], "A4")) {
-					pageSize = QPrinter::A4;
-				}
-				else if (!strcmp(argv[c], "a5") ||
-				         !strcmp(argv[c], "A5")) {
-					pageSize = QPrinter::A5;
-				}
-				else {
-					std::cerr << "unknown paper size\n";
-					exit(2);
-				}
-			}
+                if (!strcmp(argv[c], "a4") ||
+                        !strcmp(argv[c], "A4")) {
+                    pageSize = QPrinter::A4;
+                } else if (!strcmp(argv[c], "a5") ||
+                           !strcmp(argv[c], "A5")) {
+                    pageSize = QPrinter::A5;
+                } else {
+                    std::cerr << "unknown paper size\n";
+                    exit(2);
+                }
+            }
 
             ++c;
         }
@@ -124,10 +120,10 @@ int main(int argc, char** argv) {
         }
         v2w.setMaxSize(width, height);
         v2w.setScaleUp(true);
-		v2w.setPageSize(pageSize);
-		v2w.setOrientation(orientation);
-		v2w.setBlackWhite(blackWhite);
-		
+        v2w.setPageSize(pageSize);
+        v2w.setOrientation(orientation);
+        v2w.setBlackWhite(blackWhite);
+
         v2w.convert();
     }
 

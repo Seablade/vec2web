@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: graphicview.h,v 1.8 2003/04/02 17:54:41 andrew23 Exp $
+**  $Id: graphicview.h,v 1.9 2003/04/22 12:08:55 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -58,6 +58,7 @@ public:
     virtual void emulateMouseMoveEvent() {}
 
     virtual void requestWarningDialog(const RS_String& ) {}
+    virtual void requestPreviousMenu() {}
     virtual RS_Layer* requestNewLayerDialog() {
         return NULL;
     }
@@ -67,20 +68,43 @@ public:
     virtual RS_Layer* requestEditLayerDialog(RS_LayerList* ) {
         return NULL;
     }
-    virtual void requestEditBlockWindow(
-	    RS_BlockList* = NULL) {}
-    virtual RS_String requestFileSaveAsDialog() { return ""; }
-    virtual RS_String requestFileOpenDialog() { return ""; }
+    virtual RS_String requestFileSaveAsDialog() {
+        return "";
+    }
+    virtual RS_String requestFileOpenDialog() {
+        return "";
+    }
     virtual void requestDimensionOptions(RS_DimensionData& , bool ) {}
     virtual void requestDimLinearOptions(RS_DimLinearData& , bool ) {}
     virtual void requestArcOptions(RS_ArcData& , bool) {}
     virtual void requestCircleOptions(RS_CircleData&, bool) {}
     virtual void requestSnapDistOptions(double&, bool) {}
-	virtual void requestLineParallelOptions(double& , bool ) {}
-	virtual void requestLineAngleOptions(double& , bool ) {}
-	virtual void requestLineBisectorOptions(double& , bool ) {}
-	virtual void requestToolBar(RS::ToolBarId) {}
-	virtual bool requestMoveDialog(RS_MoveData&) { return false; }
+    virtual void requestLineParallelOptions(double& , bool ) {}
+    virtual void requestLineAngleOptions(double& , bool ) {}
+    virtual void requestLineBisectorOptions(double& , bool ) {}
+    virtual void requestToolBar(RS::ToolBarId) {}
+    virtual void requestToolBarSelect(RS::ActionType ) {}
+    virtual RS_Block* requestNewBlockDialog() {
+        return NULL;
+    }
+    virtual RS_Block* requestBlockRemovalDialog(
+        RS_BlockList* = NULL) {
+        return NULL;
+    }
+    virtual void requestEditBlockWindow(RS_BlockList* = NULL) {}
+    virtual bool requestMoveDialog(RS_MoveData& ) {
+        return false;
+    }
+    virtual bool requestRotateDialog(RS_RotateData& ) {
+        return false;
+    }
+    virtual bool requestScaleDialog(RS_ScaleData& ) {
+        return false;
+    }
+    virtual void requestModifyEntityDialog(RS_Entity* ) {}
+    virtual bool requestTextDialog(RS_Text*) {
+        return false;
+    }
 
     virtual void updateCoordinateWidget(const RS_Vector& ,
                                         const RS_Vector& ) {}

@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.h,v 1.9 2003/04/02 17:54:42 andrew23 Exp $
+**  $Id: swfpainter.h,v 1.10 2003/04/22 12:08:56 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -54,12 +54,12 @@ public:
                              double angle,
                              double a1, double a2,
                              bool reversed);
-    virtual void drawTextH(int /*x1*/, int /*y1*/, 
-	                       int /*x2*/, int /*y2*/, 
-						   const QString& /*text*/) {}
-    virtual void drawTextV(int /*x1*/, int /*y1*/, 
-	                       int /*x2*/, int /*y2*/, 
-						   const QString& /*text*/) {}
+    virtual void drawTextH(int /*x1*/, int /*y1*/,
+                           int /*x2*/, int /*y2*/,
+                           const QString& /*text*/) {}
+    virtual void drawTextV(int /*x1*/, int /*y1*/,
+                           int /*x2*/, int /*y2*/,
+                           const QString& /*text*/) {}
     virtual void fillRect(int /*x1*/, int /*y1*/, int /*w*/, int /*h*/,
                           const RS_Color& /*col*/) {}
     virtual void fillTriangle(const RS_Vector& /*p1*/,

@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.28 2003/02/28 19:05:00 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.29 2003/04/22 12:08:56 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -63,20 +63,20 @@ void Vec2Web::convert() {
     RS_Import import(graphic);
     import.fileImport(inputFile);
 
-	// preprocessing:
-	if (blackWhite) {
-		RS_Color black(0,0,0);
-		for (RS_Entity* e=graphic.firstEntity();
-		     e!=NULL; e=graphic.nextEntity()) {
+    // preprocessing:
+    if (blackWhite) {
+        RS_Color black(0,0,0);
+        for (RS_Entity* e=graphic.firstEntity();
+                e!=NULL; e=graphic.nextEntity()) {
 
-			RS_Pen pen = e->getPen();
-			pen.setColor(black);
-			e->setPen(pen);
-		}
-	}
+            RS_Pen pen = e->getPen();
+            pen.setColor(black);
+            e->setPen(pen);
+        }
+    }
 
-	// find out the format (extension) and transform the 
-	//   extensuion to uppercase
+    // find out the format (extension) and transform the
+    //   extensuion to uppercase
     int len = strlen(outputFile);
     int i=len-2;
     while (i>0 && outputFile[i]!='.') {
@@ -120,9 +120,9 @@ bool Vec2Web::output(const char* format) {
         outputMing(9);
     } else if ( !strcmp(format, "DXML") ) {
         outputDXML();
-	} else if (!strcmp(format, "PS") || !strcmp(format, "EPS")) {
-		outputPS();
-	} else {
+    } else if (!strcmp(format, "PS") || !strcmp(format, "EPS")) {
+        outputPS();
+    } else {
         outputQt(format);
     }
 
@@ -170,7 +170,7 @@ bool Vec2Web::outputQt(const char* format) {
 
 
 bool Vec2Web::outputMing(int compressLevel) {
-	
+
 #ifdef SWF_SUPPORT
 
     Ming_init();
@@ -188,14 +188,14 @@ bool Vec2Web::outputMing(int compressLevel) {
     movie->save(outputFile, compressLevel);
 
     return true;
-    
+
 #else
 
     std::cerr << "No SWF Support compiled.\n";
     return false;
-    
+
 #endif
-    
+
 }
 
 
@@ -233,14 +233,14 @@ bool Vec2Web::outputDXML() {
  */
 bool Vec2Web::outputPS() {
 
-	QPrinter* printer;
-	printer = new QPrinter(QPrinter::HighResolution);
-	printer->setOutputToFile(true);
-	printer->setOutputFileName(outputFile);
-	printer->setPageSize(pageSize);
-	printer->setOrientation(orientation);
-	QPaintDeviceMetrics metr(printer);
-	
+    QPrinter* printer;
+    printer = new QPrinter(QPrinter::HighResolution);
+    printer->setOutputToFile(true);
+    printer->setOutputFileName(outputFile);
+    printer->setPageSize(pageSize);
+    printer->setOrientation(orientation);
+    QPaintDeviceMetrics metr(printer);
+
     QG_Painter* painter = new QG_Painter(printer);
     //painter.setBackgroundColor(RS_Color(255,255,255));
     //painter.eraseRect(0,0, (int)maxSize.x, (int)maxSize.y);
@@ -254,8 +254,8 @@ bool Vec2Web::outputPS() {
 
     // GraphicView deletes painter
     painter->end();
-	//delete painter;
-	delete printer;
+    //delete painter;
+    delete printer;
 
     return true;
 }

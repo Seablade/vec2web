@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: dxmlpainter.cpp,v 1.8 2003/03/24 21:26:18 andrew23 Exp $
+**  $Id: dxmlpainter.cpp,v 1.9 2003/04/22 12:08:55 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -56,9 +56,9 @@ void DXMLPainter::drawPoint(const RS_Vector& p) {
  * Draws a line from (x1, y1) to (x2, y2).
  */
 void DXMLPainter::drawLine(const RS_Vector& p1, const RS_Vector& p2) {
-    fprintf(dxml, 
-	"  <line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" />\n", 
-	(float)p1.x, (float)p1.y, (float)p2.x, (float)p2.y);
+    fprintf(dxml,
+            "  <line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" />\n",
+            (float)p1.x, (float)p1.y, (float)p2.x, (float)p2.y);
 }
 
 
@@ -76,10 +76,10 @@ void DXMLPainter::drawLine(const RS_Vector& p1, const RS_Vector& p2) {
  * @param reversed true: clockwise, false: counterclockwise
  */
 void DXMLPainter::drawArc(const RS_Vector& cp, double radius,
-                         double a1, double a2,
-                         const RS_Vector& /*p1*/, 
-						 const RS_Vector& /*p2*/,
-                         bool reversed) {
+                          double a1, double a2,
+                          const RS_Vector& /*p1*/,
+                          const RS_Vector& /*p2*/,
+                          bool reversed) {
     drawArc(cp, radius, a1, a2, reversed);
 }
 
@@ -93,8 +93,8 @@ void DXMLPainter::drawArc(const RS_Vector& cp, double radius,
  * @param reversed true: clockwise, false: counterclockwise
  */
 void DXMLPainter::drawArc(const RS_Vector& cp, double radius,
-                         double a1, double a2,
-                         bool reversed) {
+                          double a1, double a2,
+                          bool reversed) {
     float ang1, ang2;
     ang1 = (float)( (M_PI * 2 - a1) * ARAD );
     ang2 = (float)( (M_PI * 2 - a2) * ARAD );
@@ -102,15 +102,15 @@ void DXMLPainter::drawArc(const RS_Vector& cp, double radius,
         if (ang1 > ang2) {
             ang2 += 360;
         }
-        fprintf(dxml, 
-		"  <arc x=\"%f\" y=\"%f\" radius=\"%f\" angle1=\"%f\" angle2=\"%f\" />\n",
-        (float)cp.x, (float)cp.y, (float)radius, ang1, ang2);
+        fprintf(dxml,
+                "  <arc x=\"%f\" y=\"%f\" radius=\"%f\" angle1=\"%f\" angle2=\"%f\" />\n",
+                (float)cp.x, (float)cp.y, (float)radius, ang1, ang2);
     } else {
         if (ang2 > ang1) {
             ang1 += 360;
         }
         fprintf(dxml, "  <arc x=\"%f\" y=\"%f\" radius=\"%f\" angle1=\"%f\" angle2=\"%f\" />\n",
-        (float)cp.x, (float)cp.y, (float)radius, ang2, ang1);
+                (float)cp.x, (float)cp.y, (float)radius, ang2, ang1);
     }
 }
 
@@ -127,10 +127,10 @@ void DXMLPainter::drawArc(const RS_Vector& cp, double radius,
  * @param reversed true: clockwise, false: counterclockwise
  */
 void DXMLPainter::drawEllipse(const RS_Vector& cp,
-                             double radius1, double radius2,
-                             double angle,
-                             double a1, double a2,
-                             bool reversed) {
+                              double radius1, double radius2,
+                              double angle,
+                              double a1, double a2,
+                              bool reversed) {
     float ang, ang1, ang2;
     ang = (float)( (M_PI * 2 - angle) * ARAD );
     ang1 = (float)( (M_PI * 2 - a1) * ARAD );
@@ -140,13 +140,13 @@ void DXMLPainter::drawEllipse(const RS_Vector& cp,
             ang2 += 360;
         }
         fprintf(dxml, "  <ellipse x=\"%f\" y=\"%f\" radius1=\"%f\" radius2=\"%f\" angle1=\"%f\" angle2=\"%f\" angle3=\"%f\" />\n",
-        (float)cp.x, (float)cp.y, (float)radius1, (float)radius2, ang, ang1, ang2);
+                (float)cp.x, (float)cp.y, (float)radius1, (float)radius2, ang, ang1, ang2);
     } else {
         if (ang2 > ang1) {
             ang1 += 360;
         }
         fprintf(dxml, "  <ellipse x=\"%f\" y=\"%f\" radius1=\"%f\" radius2=\"%f\" angle1=\"%f\" angle2=\"%f\" angle3=\"%f\" />\n",
-        (float)cp.x, (float)cp.y, (float)radius1, (float)radius2, ang, ang2, ang1);
+                (float)cp.x, (float)cp.y, (float)radius1, (float)radius2, ang, ang2, ang1);
     }
 }
 
