@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.12 2003/02/05 20:53:39 xiru Exp $
+**  $Id: vec2web.cpp,v 1.13 2003/02/07 13:18:23 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -183,8 +183,23 @@ bool Vec2Web::outputMing(int compressLevel) {
 
 	RS_Color c = e->getPen().getColor();
         shape->setLine( swfw(e->getPen().getWidth()), (int)c.red(), (int)c.green(), (int)c.blue() ); 
+        //shape->setLine( swfw(e->getPen().getWidth()), 0, 0, 0 ); 
 
         switch ( e->rtti() ) {
+
+        case RS::EntityPoint: {
+	        RS_Point* p = (RS_Point*)e;
+		shape->movePenTo( (float)transformX(p->getPos().x - 1),
+				  (float)transformY(p->getPos().y, true) );
+		shape->drawLineTo( (float)transformX(p->getPos().x + 1),
+				   (float)transformY(p->getPos().y, true) );
+		shape->movePenTo( (float)transformX(p->getPos().x),
+				  (float)transformY(p->getPos().y - 1, true) );
+		shape->drawLineTo( (float)transformX(p->getPos().x),
+				   (float)transformY(p->getPos().y + 1, true) );
+		movie->add( shape );
+	    }
+	    break;
 		
         case RS::EntityLine: {
                 RS_Line* l = (RS_Line*)e;
