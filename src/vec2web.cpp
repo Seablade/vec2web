@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.6 2002/09/23 01:56:53 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.7 2002/10/09 01:00:32 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -160,12 +160,12 @@ Vec2Web::outputGd(Format format) {
     for (RS_Entity* e=graphic.firstEntity(); e!=0; e = graphic.nextEntity()) {
 
 		// set color:
-		RS_Color rc = e->getPen().color();
+		RS_Color rc = e->getPen().getColor();
 		int col = gdImageColorAllocate(im, 
 		            rc.red(), rc.green(), rc.blue());
 	
         switch (e->rtti()) {
-        case RS_Entity::RS_ENTITY_LINE: {
+        case RS::EntityLine: {
                 RS_Line* l = (RS_Line*)e;
                 gdImageLine(im,
                             (int)transformX(l->getStartpoint().x),
@@ -176,7 +176,7 @@ Vec2Web::outputGd(Format format) {
             }
             break;
 
-        case RS_Entity::RS_ENTITY_ARC: {
+        case RS::EntityArc: {
                 RS_Arc* a = (RS_Arc*)e;
 
                 gdImageArc(im,
@@ -184,13 +184,13 @@ Vec2Web::outputGd(Format format) {
                            (int)transformY(a->getCenter().y, true),
                            (int)transformD(a->getRadius() * 2),
                            (int)transformD(a->getRadius() * 2),
-                           (int)(360 - a->getAngle2()),
-                           (int)(360 - a->getAngle1()),
+                           (int)((2*M_PI - a->getAngle2())*ARAD),
+                           (int)((2*M_PI - a->getAngle1())*ARAD),
                            col);
             }
             break;
 
-        case RS_Entity::RS_ENTITY_CIRCLE: {
+        case RS::EntityCircle: {
                 RS_Circle* c = (RS_Circle*)e;
 
                 gdImageArc(im,
@@ -203,7 +203,7 @@ Vec2Web::outputGd(Format format) {
             }
             break;
 
-        case RS_Entity::RS_ENTITY_TEXT: {
+        case RS::EntityText: {
                 /*
                 DL_Text* t = (DL_Text*)e;
 
@@ -300,7 +300,7 @@ Vec2Web::outputG2(Format format) {
 
     for (RS_Entity* e=graphic.firstEntity(); e!=0; e=graphic.nextEntity()) {
         switch (e->rtti()) {
-        case RS_Entity::RS_ENTITY_LINE: {
+        case RS::EntityLine: {
 				RS_Line* l = (RS_Line*)e;
 				
             	g2_line(handle,
@@ -311,7 +311,7 @@ Vec2Web::outputG2(Format format) {
 			}
             break;
 
-        case RS_Entity::RS_ENTITY_ARC: {
+        case RS::EntityArc: {
                 RS_Arc* a = (RS_Arc*)e;
 
                 g2_arc(handle,
@@ -319,11 +319,11 @@ Vec2Web::outputG2(Format format) {
 					   transformY(a->getCenter().y),
                        transformD(a->getRadius()), 
 					   transformD(a->getRadius()),
-                       a->getAngle1(), a->getAngle2());
+                       a->getAngle1()*ARAD, a->getAngle2()*ARAD);
             }
             break;
 
-        case RS_Entity::RS_ENTITY_CIRCLE: {
+        case RS::EntityCircle: {
                 RS_Circle* a = (RS_Circle*)e;
 
                 g2_ellipse(handle,
