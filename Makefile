@@ -18,7 +18,7 @@ all: vec2web
 
 #prepare:
 
-vec2web: src/Makefile src/*.h src/*.cpp ../dxflib/lib/libdxf.a ../qcadguiqt/lib/libqcadguiqt.a ../qcadlib/lib/libqcad.a
+vec2web: src/Makefile src/*.h src/*.cpp ../dxflib/lib/libdxf.a ../qcadlib/lib/libqcad.a
 	- rm vec2web
 	cd src && $(MAKE)
 

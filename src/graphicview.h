@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: graphicview.h,v 1.10 2003/05/02 17:08:01 andrew23 Exp $
+**  $Id: graphicview.h,v 1.11 2003/05/12 20:06:49 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -29,10 +29,12 @@
 #include "rs_graphicview.h"
 #include "rs_layerlistlistener.h"
 
+/*
 #include "qg_coordinatewidget.h"
 #include "qg_mousewidget.h"
 #include "qg_painter.h"
 #include "qg_scrollbar.h"
+*/
 
 #define QG_SCROLLMARGIN 150
 

@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.32 2003/05/10 15:03:21 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.33 2003/05/12 20:06:49 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -19,21 +19,25 @@
 ******************************************************************************/
 
 #include "vec2web.h"
-#include "graphicview.h"
+
+#include <ctype.h>
+
+#include <qimage.h>
+#include <qpaintdevicemetrics.h>
+
 #include "dl_creationinterface.h"
 #include "dl_dxf.h"
+
 #include "rs_creation.h"
 #include "rs_color.h"
 #include "rs_graphic.h"
 #include "rs_import.h"
 #include "rs_system.h"
+#include "rs_painterqt.h"
 #include "rs.h"
+
 #include "dxmlpainter.h"
-
-#include <qimage.h>
-#include <qpaintdevicemetrics.h>
-#include <ctype.h>
-
+#include "graphicview.h"
 #ifdef SWF_SUPPORT
 #include "swfpainter.h"
 #endif
@@ -140,7 +144,7 @@ bool Vec2Web::outputQt(const char* format) {
     bool ret = false;
 
     QPixmap* buffer = new QPixmap((int)maxSize.x, (int)maxSize.y);
-    QG_Painter* painter = new QG_Painter(buffer);
+    RS_PainterQt* painter = new RS_PainterQt(buffer);
     painter->setBackgroundColor(RS_Color(255,255,255));
     painter->eraseRect(0,0, (int)maxSize.x, (int)maxSize.y);
 
@@ -236,7 +240,7 @@ bool Vec2Web::outputPS() {
     printer->setOrientation(orientation);
     QPaintDeviceMetrics metr(printer);
 
-    QG_Painter* painter = new QG_Painter(printer);
+    RS_PainterQt* painter = new RS_PainterQt(printer);
     //painter.setBackgroundColor(RS_Color(255,255,255));
     //painter.eraseRect(0,0, (int)maxSize.x, (int)maxSize.y);
 

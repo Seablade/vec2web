@@ -2,18 +2,18 @@ TEMPLATE	= app
 CONFIG		+= qt warn_on debug ming
 
 unix {
-	LIBS        += -L../../qcadguiqt/lib -lqcadguiqt \
+	LIBS        += -L../../qcadactions/lib -lqcadactions \
 	               -L../../qcadlib/lib -lqcad \
 				   -L../../dxflib/lib -ldxf
 }
 win32 {
-	LIBS        += ../../qcadguiqt/lib/qcadguiqt.lib \
+	LIBS        += ../../qcadactions/lib/qcadactions.lib \
 	               ../../qcadlib/lib/qcad.lib \
 				   ../../dxflib/lib/dxflib.lib
 }
 INCLUDEPATH += ../../dxflib/include \
                ../../qcadlib/include \
-			   ../../qcadguiqt/include
+               ../../qcadactions/include
 
 unix {
 	exists(../../ming/libming.a) {
