@@ -46,6 +46,6 @@ do
 	./vec2web $inputFile ${outputFile}_bw.ps -b -o l -s A4
 	echo "  Output: $outputFile.dxml"
 	./vec2web $inputFile $outputFile.dxml -x 800 -y 600
+	rm debug_*.log
 done
 
-rm debug_*.log
