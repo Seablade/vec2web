@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.14 2003/02/07 19:42:37 xiru Exp $
+**  $Id: vec2web.cpp,v 1.15 2003/02/10 19:19:53 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -181,9 +181,9 @@ bool Vec2Web::outputMing(int compressLevel) {
 
 	SWFShape *shape = new SWFShape();
 
-	RS_Color c = e->getPen().getColor();
-        shape->setLine( swfw(e->getPen().getWidth()), (int)c.red(), (int)c.green(), (int)c.blue() ); 
-        //shape->setLine( swfw(e->getPen().getWidth()), 0, 0, 0 ); 
+	//RS_Color c = e->getPen().getColor();
+        //shape->setLine( swfw(e->getPen().getWidth()), (int)c.red(), (int)c.green(), (int)c.blue() ); 
+        shape->setLine( 1, 0, 0, 0 );  // Debuging...
 
         switch ( e->rtti() ) {
 
@@ -221,12 +221,24 @@ bool Vec2Web::outputMing(int compressLevel) {
                          if (first) {
                               shape->movePenTo( (float)transformX(l->getStartpoint().x),
                                                 (float)transformY(l->getStartpoint().y, true) );
-                              first = false;
                          } 
                          shape->drawLineTo( (float)transformX(l->getEndpoint().x),
                                             (float)transformY(l->getEndpoint().y, true) );
                      } else if (v->rtti()==RS::EntityArc) {
+                         RS_Arc* a = (RS_Arc*)v;
+			 shape->movePenTo( (float)transformX(a->getCenter().x),
+			 		   (float)transformY(a->getCenter().y, true) );
+			 float a1, a2;
+			 a1 = a->isReversed() ? a->getAngle2() : a->getAngle1();
+			 a2 = a->isReversed() ? a->getAngle1() : a->getAngle2();
+			 a1 = (float)( ( M_PI * 2 - a1 ) * ARAD + 90 );
+			 a2 = (float)( ( M_PI * 2 - a2 ) * ARAD + 90 );
+			 if ( a2 > a1 ) a1 += 360;
+			 shape->drawArc( (float)transformD(a->getRadius()), a2, a1 ); 
+			 shape->movePenTo( (float)transformX(a->getEndpoint().x),
+			 		   (float)transformY(a->getEndpoint().y, true) );
                      }
+                     first = false;
                  }
                  movie->add( shape );
              }
@@ -243,9 +255,9 @@ bool Vec2Web::outputMing(int compressLevel) {
 
         case RS::EntityArc: {
                 RS_Arc* a = (RS_Arc*)e;
-		float a1, a2;
 		shape->movePenTo( (float)transformX(a->getCenter().x),
 				  (float)transformY(a->getCenter().y, true) );
+		float a1, a2;
 		a1 = (float)( ( M_PI * 2 - a->getAngle1() ) * ARAD + 90 );
 		a2 = (float)( ( M_PI * 2 - a->getAngle2() ) * ARAD + 90 );
 		if ( a2 > a1 ) a1 += 360;
