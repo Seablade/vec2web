@@ -7,9 +7,9 @@ win32 {
 	LIBS        += ../../qcadguiqt/lib/qcadguiqt.lib ../../qcadlib/lib/qcad.lib ../../dxflib/lib/dxflib.lib
 }
 INCLUDEPATH += ../../dxflib/include ../../qcadlib/include ../../qcadguiqt/include
-exists(../../ming/src/libming.a) {
-	LIBS        += -L../../ming/src -lming
-	INCLUDEPATH += ../../ming/src
+exists(../../ming-0.2a/libming.a) {
+	LIBS        += -L../../ming-0.2a -lming
+	INCLUDEPATH += ../../ming-0.2a
 	DEFINES     += SWF_SUPPORT
 }
 HEADERS		= vec2web.h \
