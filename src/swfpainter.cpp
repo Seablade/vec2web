@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.cpp,v 1.5 2003/02/13 23:03:57 xiru Exp $
+**  $Id: swfpainter.cpp,v 1.6 2003/02/20 16:05:14 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -131,6 +131,93 @@ void SWFPainter::drawCircle(double cx, double cy, double radius) {
     shape->movePenTo((float)cx, (float)cy);
     shape->drawCircle((float)radius);
     movie->add(shape);
+}
+
+
+/**
+ * Draws an ellipse.
+ * @param cx center in x
+ * @param cy center in y
+ * @param radius1 Radius 1
+ * @param radius2 Radius 2
+ * @param angle Angle in rad
+ * @param a1 Angle 1 in rad
+ * @param a2 Angle 2 in rad
+ * @param reversed true: clockwise, false: counterclockwise
+ */
+void SWFPainter::drawEllipse(double cx, double cy,
+                             double radius1, double radius2,
+                             double angle,
+                             double a1, double a2,
+                             bool reversed) {
+	
+    SWFShape *shape = new SWFShape();
+    shape->setLine(width,colr,colg,colb);
+
+    double aStep;            // Angle Step (rad)
+    double a;                // Current Angle (rad)
+
+    // Angle step in rad
+    if (radius1<radius2) {
+        if (radius1<1.0e-4) {
+            aStep=1.0;
+        } else {
+            aStep=asin(2.0/radius1);
+        }
+    } else {
+        if (radius2<1.0e-4) {
+            aStep=1.0;
+        } else {
+            aStep=asin(2.0/radius2);
+        }
+    }
+
+    if(aStep<0.05) {
+        aStep = 0.05;
+    }
+
+    aStep=0.01;
+
+    RS_Vector vp;
+    RS_Vector vc(cx, cy);
+    vp.set(cx+cos(a1)*radius1,
+           cy-sin(a1)*radius2);
+    vp.rotate(vc, -angle);
+    shape->movePenTo((float)RS_Math::round(vp.x),
+		     (float)RS_Math::round(vp.y));
+    if(!reversed) {
+        // Arc Counterclockwise:
+        if(a1>a2-1.0e-6) {
+            a2+=2*M_PI;
+        }
+        for(a=a1+aStep; a<=a2; a+=aStep) {
+            vp.set(cx+cos(a)*radius1,
+                   cy-sin(a)*radius2);
+            vp.rotate(vc, -angle);
+            shape->drawLineTo((float)RS_Math::round(vp.x),
+			      (float)RS_Math::round(vp.y));
+        }
+    } else {
+        // Arc Clockwise:
+        if(a1<a2+1.0e-6) {
+            a-=2*M_PI;
+        }
+        for(a=a1-aStep; a>=a2; a-=aStep) {
+            vp.set(cx+cos(a)*radius1,
+                   cy-sin(a)*radius2);
+            vp.rotate(vc, -angle);
+            shape->drawLineTo((float)RS_Math::round(vp.x),
+			      (float)RS_Math::round(vp.y));
+        }
+    }
+    vp.set(cx+cos(a2)*radius1,
+           cy-sin(a2)*radius2);
+    vp.rotate(vc, -angle);
+    shape->drawLineTo((float)RS_Math::round(vp.x),
+                      (float)RS_Math::round(vp.y));
+
+    movie->add(shape);
+    
 }
 
 

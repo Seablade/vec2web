@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: dxmlpainter.cpp,v 1.1 2003/02/14 00:09:49 xiru Exp $
+**  $Id: dxmlpainter.cpp,v 1.2 2003/02/20 16:05:10 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -56,7 +56,7 @@ void DXMLPainter::drawPoint(double x, double y) {
  * Draws a line from (x1, y1) to (x2, y2).
  */
 void DXMLPainter::drawLine(double x1, double y1, double x2, double y2) {
-    fprintf(dxml, "  <line x0=\"%f\" y0=\"%f\" x1=\"%f\" y1=\"%f\" \\>\n", (float)x1, (float)y1, (float)x2, (float)y2);
+    fprintf(dxml, "  <line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" \\>\n", (float)x1, (float)y1, (float)x2, (float)y2);
 }
 
 
@@ -99,13 +99,13 @@ void DXMLPainter::drawArc(double cx, double cy, double radius,
         if (ang1 > ang2) {
             ang2 += 360;
         }
-        fprintf(dxml, "  <arc x=\"%f\" y=\"%f\" radius=\"%f\" angle0=\"%f\" angle1=\"%f\" \\>\n",
+        fprintf(dxml, "  <arc x=\"%f\" y=\"%f\" radius=\"%f\" angle1=\"%f\" angle2=\"%f\" \\>\n",
         (float)cx, (float)cy, (float)radius, ang1, ang2);
     } else {
         if (ang2 > ang1) {
             ang1 += 360;
         }
-        fprintf(dxml, "  <arc x=\"%f\" y=\"%f\" radius=\"%f\" angle0=\"%f\" angle1=\"%f\" \\>\n",
+        fprintf(dxml, "  <arc x=\"%f\" y=\"%f\" radius=\"%f\" angle1=\"%f\" angle2=\"%f\" \\>\n",
         (float)cx, (float)cy, (float)radius, ang2, ang1);
     }
 }
@@ -119,6 +119,41 @@ void DXMLPainter::drawArc(double cx, double cy, double radius,
  */
 void DXMLPainter::drawCircle(double cx, double cy, double radius) {
     fprintf(dxml, "  <circle x=\"%f\" y=\"%f\" radius=\"%f\" \\>\n", (float)cx, (float)cy, (float)radius);
+}
+
+
+/**
+ * Draws an ellipse.
+ * @param cx center in x
+ * @param cy center in y
+ * @param radius1 Radius 1
+ * @param radius2 Radius 2
+ * @param angle Angle in rad
+ * @param a1 Angle 1 in rad
+ * @param a2 Angle 2 in rad
+ * @param reversed true: clockwise, false: counterclockwise
+ */
+void DXMLPainter::drawEllipse(double cx, double cy,
+                             double radius1, double radius2,
+                             double angle,
+                             double a1, double a2,
+                             bool reversed) {
+    float ang1, ang2;
+    ang1 = (float)( (M_PI * 2 - a1) * ARAD + 90 );
+    ang2 = (float)( (M_PI * 2 - a2) * ARAD + 90 );
+    if (reversed) {
+        if (ang1 > ang2) {
+            ang2 += 360;
+        }
+        fprintf(dxml, "  <ellipse x=\"%f\" y=\"%f\" radius1=\"%f\" radius2=\"%f\" angle1=\"%f\" angle2=\"%f\" angle3=\"%f\" \\>\n",
+        (float)cx, (float)cy, (float)radius1, (float)radius2, (float)angle, ang1, ang2);
+    } else {
+        if (ang2 > ang1) {
+            ang1 += 360;
+        }
+        fprintf(dxml, "  <ellipse x=\"%f\" y=\"%f\" radius1=\"%f\" radius2=\"%f\" angle1=\"%f\" angle2=\"%f\" angle3=\"%f\" \\>\n",
+        (float)cx, (float)cy, (float)radius1, (float)radius2, (float)angle, ang2, ang1);
+    }
 }
 
 

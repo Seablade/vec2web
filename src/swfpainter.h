@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.h,v 1.4 2003/02/13 23:03:57 xiru Exp $
+**  $Id: swfpainter.h,v 1.5 2003/02/20 16:05:15 xiru Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -54,7 +54,7 @@ public:
                              double radius1, double radius2,
                              double angle,
                              double a1, double a2,
-                             bool reversed) {}
+                             bool reversed);
     virtual void drawTextH(int x1, int y1, int x2, int y2, const QString& text) {}
     virtual void drawTextV(int x1, int y1, int x2, int y2, const QString& text) {}
     virtual void fillRect(int x1, int y1, int w, int h,
