@@ -14,9 +14,9 @@ INSTALLDIR = $(HOME)/local
 
 FIND = find
 
-all: prepare vec2web
+all: vec2web
 
-prepare:
+#prepare:
 
 vec2web: src/Makefile src/*.h src/*.cpp ../dxflib/lib/libdxf.a ../qcadguiqt/lib/libqcadguiqt.a ../qcadlib/lib/libqcad.a
 	- rm vec2web
