@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: graphicview.h,v 1.11 2003/05/12 20:06:49 andrew23 Exp $
+**  $Id: graphicview.h,v 1.12 2003/05/18 00:08:40 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -55,7 +55,7 @@ public:
     virtual RS_Painter* createPainter();
     virtual RS_Painter* createDirectPainter();
     virtual void destroyPainter();
-    virtual void setMouseCursor(RS::CursorType ) {}
+    virtual void setMouseCursor(RS2::CursorType ) {}
 
     virtual void emulateMouseMoveEvent() {}
 
@@ -84,8 +84,8 @@ public:
     virtual void requestLineParallelOptions(double& , bool ) {}
     virtual void requestLineAngleOptions(double& , bool ) {}
     virtual void requestLineBisectorOptions(double& , bool ) {}
-    virtual void requestToolBar(RS::ToolBarId) {}
-    virtual void requestToolBarSelect(RS::ActionType ) {}
+    virtual void requestToolBar(RS2::ToolBarId) {}
+    virtual void requestToolBarSelect(RS2::ActionType ) {}
     virtual RS_Block* requestNewBlockDialog() {
         return NULL;
     }

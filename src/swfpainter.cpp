@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.cpp,v 1.12 2003/05/07 18:53:40 xiru Exp $
+**  $Id: swfpainter.cpp,v 1.13 2003/05/18 00:08:40 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -211,13 +211,13 @@ void SWFPainter::drawEllipse(const RS_Vector& cp,
 
 
 RS_Pen SWFPainter::getPen() {
-    return RS_Pen(RS_Color(colr,colg,colb), RS::Width01, RS::SolidLine);
+    return RS_Pen(RS_Color(colr,colg,colb), RS2::Width01, RS2::SolidLine);
 }
 
 
 void SWFPainter::setPen(const RS_Pen& pen) {
     float w;
-    w = RS::qw(pen.getWidth());
+    w = RS2::qw(pen.getWidth());
     w = w / 21.1;
     if ( w < 1 ) {
         w = 1;

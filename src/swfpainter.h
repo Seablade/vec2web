@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: swfpainter.h,v 1.10 2003/04/22 12:08:56 andrew23 Exp $
+**  $Id: swfpainter.h,v 1.11 2003/05/18 00:08:41 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -70,6 +70,9 @@ public:
     virtual void setPen(const RS_Pen& pen);
     virtual void setPen(const RS_Color& color);
     virtual void setPen(int r, int g, int b);
+	virtual void disablePen() {}
+	virtual void setBrush(const RS_Color& /*color*/) {}
+	virtual void drawPolygon(const RS_PointArray& /*a*/) {}
     virtual void setXORMode() {}
     virtual void setNormalMode() {}
     virtual void setClipRect(int /*x*/, int /*y*/, int /*w*/, int /*h*/) {}

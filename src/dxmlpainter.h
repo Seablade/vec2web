@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: dxmlpainter.h,v 1.5 2003/03/24 21:26:18 andrew23 Exp $
+**  $Id: dxmlpainter.h,v 1.6 2003/05/18 00:08:40 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -66,6 +66,9 @@ public:
     virtual void setPen(const RS_Pen& pen);
     virtual void setPen(const RS_Color& color);
     virtual void setPen(int r, int g, int b);
+	virtual void disablePen() {}
+	virtual void setBrush(const RS_Color& /*color*/) {}
+	virtual void drawPolygon(const RS_PointArray& /*a*/) {}
     virtual void setXORMode() {}
     virtual void setNormalMode() {}
     virtual void setClipRect(int /*x*/, int /*y*/,

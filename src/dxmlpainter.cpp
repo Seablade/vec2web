@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: dxmlpainter.cpp,v 1.9 2003/04/22 12:08:55 andrew23 Exp $
+**  $Id: dxmlpainter.cpp,v 1.10 2003/05/18 00:08:40 andrew23 Exp $
 **
 **  This is part of the QCad Qt GUI
 **  Copyright (C) 2001 Andrew Mustun
@@ -152,12 +152,12 @@ void DXMLPainter::drawEllipse(const RS_Vector& cp,
 
 
 RS_Pen DXMLPainter::getPen() {
-    return RS_Pen(RS_Color(colr,colg,colb), RS::Width01, RS::SolidLine);
+    return RS_Pen(RS_Color(colr,colg,colb), RS2::Width01, RS2::SolidLine);
 }
 
 
 void DXMLPainter::setPen(const RS_Pen& pen) {
-    width = RS::qw(pen.getWidth());
+    width = RS2::qw(pen.getWidth());
     colr = pen.getColor().red();
     colg = pen.getColor().green();
     colb = pen.getColor().blue();
