@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.30 2003/05/02 17:08:01 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.31 2003/05/03 19:15:22 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -145,9 +145,8 @@ bool Vec2Web::outputQt(const char* format) {
     painter->eraseRect(0,0, (int)maxSize.x, (int)maxSize.y);
 
     GraphicView gv((int)maxSize.x, (int)maxSize.y, painter);
-
     gv.setContainer(&graphic);
-    gv.zoomAuto();
+    gv.zoomAuto(false);
     gv.drawEntity(&graphic, false, true);
 
     QImageIO iio;
