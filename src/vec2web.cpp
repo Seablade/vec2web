@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.17 2003/02/11 16:32:23 xiru Exp $
+**  $Id: vec2web.cpp,v 1.18 2003/02/11 18:34:25 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -223,7 +223,7 @@ bool Vec2Web::outputMing(int compressLevel) {
                 RS_Polyline* l = (RS_Polyline*)e;
                 bool first = true;
                 for ( RS_Entity* v=l->firstEntity(RS::ResolveNone); v!=NULL;
-                        v=l->nextEntity(RS::ResolveNone) ) {
+                      v=l->nextEntity(RS::ResolveNone) ) {
                     if (v->rtti()==RS::EntityLine) {
                         RS_Line* l = (RS_Line*)v;
                         if (first) {
@@ -252,8 +252,8 @@ bool Vec2Web::outputMing(int compressLevel) {
 		if ( (! first) && l->isClosed() ) {
                     shape->movePenTo( (float)transformX(l->getStartpoint().x),
                                       (float)transformY(l->getStartpoint().y, true) );
-                    shape->drawLineTo( (float)transformX(l->getEndpoint().x),
-                                       (float)transformY(l->getEndpoint().y, true) );
+                    shape->drawLine( (float)transformX(l->getEndpoint().x),
+                                     (float)transformY(l->getEndpoint().y, true) );
 		}
                 movie->add( shape );
             }
