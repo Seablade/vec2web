@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.36 2003/09/15 12:59:13 andrew23 Exp $
+**  $Id: vec2web.cpp,v 1.37 2003/09/25 19:26:34 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -32,6 +32,7 @@
 #include "rs_color.h"
 #include "rs_graphic.h"
 #include "rs_import.h"
+#include "rs_export.h"
 #include "rs_system.h"
 #include "rs_painterqt.h"
 #include "rs_staticgraphicview.h"
@@ -65,6 +66,10 @@ void Vec2Web::convert() {
     // Read the DXF into graphic object
     RS_Import import(&graphic);
     import.fileImport(inputFile, RS2::FormatUnknown);
+
+	// TEMP: for rewriting files
+	//RS_Export exp(graphic);
+    //exp.fileExport(inputFile);
 
     // preprocessing:
     if (blackWhite) {

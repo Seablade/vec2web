@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: main.cpp,v 1.12 2003/09/24 22:58:45 andrew23 Exp $
+**  $Id: main.cpp,v 1.13 2003/09/25 19:26:33 andrew23 Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -24,6 +24,9 @@
 
 #include "vec2web.h"
 
+#include "rs_import.h"
+#include "rs_export.h"
+#include "rs_graphic.h"
 #include "rs_system.h"
 #include "rs_fontlist.h"
 #include "rs_patternlist.h"
@@ -50,6 +53,7 @@ int main(int argc, char** argv) {
         double width=256;            // arg: width
         double height=256;           // arg: height
         bool blackWhite = false;     // arg: b/w instead of colors
+        bool rewrite = false;
         QPrinter::Orientation orientation = QPrinter::Landscape;
         QPrinter::PageSize pageSize = QPrinter::A4;
 
@@ -77,6 +81,10 @@ int main(int argc, char** argv) {
             else if (!strcmp(argv[c], "--blackwhite") ||
                      !strcmp(argv[c], "-b")) {
                 blackWhite = true;
+            }
+            // rewrite file:
+            else if (!strcmp(argv[c], "--rewrite")) {
+                rewrite = true;
             }
             // page orientation for PS
             else if (c<argc-1 &&
@@ -116,23 +124,34 @@ int main(int argc, char** argv) {
 
         QApplication a(argc, argv);
 
-    	RS_DEBUG->setLevel(RS_Debug::D_WARNING);
-    	RS_SYSTEM->init(VW_APPNAME, VW_VERSION, VW_DIRNAME);
+        RS_DEBUG->setLevel(RS_Debug::D_WARNING);
+        RS_SYSTEM->init(VW_APPNAME, VW_VERSION, VW_DIRNAME);
         RS_FONTLIST->init();
         RS_PATTERNLIST->init();
 
-        Vec2Web v2w;
-        v2w.setInputFile(argv[1]);
-        if (argc>2) {
-            v2w.setOutputFile(argv[2]);
-        }
-        v2w.setMaxSize(width, height);
-        v2w.setScaleUp(true);
-        v2w.setPageSize(pageSize);
-        v2w.setOrientation(orientation);
-        v2w.setBlackWhite(blackWhite);
+        // Only rewrite DXF:
+        if (rewrite) {
+            RS_Graphic graphic;
+            RS_Import import(&graphic);
+            import.fileImport(argv[1], RS2::FormatUnknown);
 
-        v2w.convert();
+            RS_Export exp(graphic);
+            exp.fileExport(argv[1]);
+        } else {
+
+            Vec2Web v2w;
+            v2w.setInputFile(argv[1]);
+            if (argc>2) {
+                v2w.setOutputFile(argv[2]);
+            }
+            v2w.setMaxSize(width, height);
+            v2w.setScaleUp(true);
+            v2w.setPageSize(pageSize);
+            v2w.setOrientation(orientation);
+            v2w.setBlackWhite(blackWhite);
+
+            v2w.convert();
+        }
     }
 
 
