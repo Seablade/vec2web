@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  $Id: vec2web.cpp,v 1.21 2003/02/12 00:07:38 xiru Exp $
+**  $Id: vec2web.cpp,v 1.22 2003/02/12 14:08:19 xiru Exp $
 **
 **  This is part of the vec2web tool
 **  Copyright (C) 2000 Andrew Mustun, Causeway Technologies
@@ -316,7 +316,11 @@ bool Vec2Web::outputMing(int compressLevel) {
 
 bool Vec2Web::outputDXML() {
 
-    printf("<draw x=\"%i\" y=\"%i\">\n", (int)maxSize.x, (int)maxSize.y);
+    FILE *dxml;
+
+    dxml = fopen(outputFile, "w");
+
+    fprintf(dxml, "<draw x=\"%i\" y=\"%i\">\n", (int)maxSize.x, (int)maxSize.y);
 	
     for ( RS_Entity* e=graphic.firstEntity(); e!=0; e=graphic.nextEntity() ) {
 
@@ -324,14 +328,14 @@ bool Vec2Web::outputDXML() {
 		
         case RS::EntityPoint: {
                 RS_Point* p = (RS_Point*)e;
-		printf("  <point x=\"%f\" y=\"%f\" \\>\n",
+		fprintf(dxml, "  <point x=\"%f\" y=\"%f\" \\>\n",
 		    transformX(p->getPos().x), transformY(p->getPos().y));
             }
             break;
 
         case RS::EntityLine: {
                 RS_Line* l = (RS_Line*)e;
-		printf("  <line x0=\"%f\" y0=\"%f\" x1=\"%f\" y1=\"%f\" \\>\n",
+		fprintf(dxml, "  <line x0=\"%f\" y0=\"%f\" x1=\"%f\" y1=\"%f\" \\>\n",
 		    transformX(l->getStartpoint().x), transformY(l->getStartpoint().y, true),
 		    transformX(l->getEndpoint().x), transformY(l->getEndpoint().y, true));
             }
@@ -344,46 +348,46 @@ bool Vec2Web::outputDXML() {
                 RS_Polyline* l = (RS_Polyline*)e;
                 bool first = true;
 		if (! l->isClosed()) {
-		    printf("  <polyline>\n");
+		    fprintf(dxml, "  <polyline>\n");
 		} else {
-		    printf("  <polyline closed=\"closed\">\n");
+		    fprintf(dxml, "  <polyline closed=\"closed\">\n");
 		}
                 for ( RS_Entity* v=l->firstEntity(RS::ResolveNone); v!=NULL;
                       v=l->nextEntity(RS::ResolveNone) ) {
                     if (v->rtti()==RS::EntityLine) {
                         RS_Line* l = (RS_Line*)v;
 			if (first) {
-		            printf("    <vertex x=\"%f\" y=\"%f\" \\>\n",
+		            fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" \\>\n",
 		                transformX(l->getStartpoint().x), transformY(l->getStartpoint().y, true));
 		            first = false;
 			}
-		        printf("    <vertex x=\"%f\" y=\"%f\" \\>\n",
+		        fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" \\>\n",
 		            transformX(l->getEndpoint().x), transformY(l->getEndpoint().y, true));
                     } else if (v->rtti()==RS::EntityArc) {
                         RS_Arc* a = (RS_Arc*)v;
 			if (first) {
-		            printf("    <vertex x=\"%f\" y=\"%f\" \\>\n",
+		            fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" \\>\n",
 		                transformX(a->getStartpoint().x), transformY(a->getStartpoint().y, true));
 		            first = false;
 			}
-		        printf("    <vertex x=\"%f\" y=\"%f\" bulge=\"%f\" \\>\n",
+		        fprintf(dxml, "    <vertex x=\"%f\" y=\"%f\" bulge=\"%f\" \\>\n",
 		            transformX(a->getEndpoint().x), transformY(a->getEndpoint().y, true), a->getBulge());
                     }
                 }
-		printf("  </polyline>\n");
+		fprintf(dxml, "  </polyline>\n");
             }
             break;
 
         case RS::EntityCircle: {
                 RS_Circle* c = (RS_Circle*)e;
-		printf("  <circle x=\"%f\" y=\"%f\" radius=\"%f\" \\>\n",
+		fprintf(dxml, "  <circle x=\"%f\" y=\"%f\" radius=\"%f\" \\>\n",
 		    transformX(c->getCenter().x), transformY(c->getCenter().y, true), transformD(c->getRadius()));
             }
             break;
 
         case RS::EntityArc: {
                 RS_Arc* a = (RS_Arc*)e;
-		printf("  <arc x=\"%f\" y=\"%f\" radius=\"%f\" angle0=\"%f\" angle1=\"%f\" \\>\n",
+		fprintf(dxml, "  <arc x=\"%f\" y=\"%f\" radius=\"%f\" angle0=\"%f\" angle1=\"%f\" \\>\n",
 	            transformX(a->getCenter().x), transformY(a->getCenter().y, true), transformD(a->getRadius()), 
 		    a->getAngle1(), a->getAngle2());
             }
@@ -395,7 +399,9 @@ bool Vec2Web::outputDXML() {
 
     }
 
-    printf("</draw>\n");
+    fprintf(dxml, "</draw>\n");
+
+    fclose(dxml);
 
     return true;
 
