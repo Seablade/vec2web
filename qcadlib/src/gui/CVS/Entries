@@ -1,0 +1,26 @@
+/rs_commandevent.h/1.4/Wed Feb 18 16:03:00 2004//
+/rs_coordinateevent.h/1.3/Wed Feb 18 16:03:00 2004//
+/rs_dialogfactory.cpp/1.3/Wed Jul  7 22:51:46 2004//
+/rs_dialogfactory.h/1.6/Wed Jul  7 22:51:46 2004//
+/rs_dialogfactoryadapter.h/1.6/Tue Aug  3 14:38:11 2004//
+/rs_dialogfactoryinterface.h/1.20/Tue Aug  3 14:38:12 2004//
+/rs_event.h/1.2/Wed Jun 11 06:56:00 2003//
+/rs_eventhandler.cpp/1.30/Thu Dec  9 23:09:53 2004//
+/rs_eventhandler.h/1.8/Sat Sep  6 00:13:02 2003//
+/rs_graphicview.cpp/1.67/Thu Dec  9 23:09:53 2004//
+/rs_graphicview.h/1.36/Sat Sep  4 19:56:42 2004//
+/rs_grid.cpp/1.13/Fri Jan  7 15:21:19 2005//
+/rs_grid.h/1.4/Mon Dec 29 23:04:00 2003//
+/rs_keyevent.h/1.2/Wed Jun 11 06:56:01 2003//
+/rs_linetypepattern.cpp/1.2/Wed Jun 11 06:56:01 2003//
+/rs_linetypepattern.h/1.3/Fri Aug  8 14:05:26 2003//
+/rs_mainwindowinterface.h/1.4/Fri Dec 17 04:31:59 2004//
+/rs_mouseevent.h/1.2/Wed Jun 11 06:56:01 2003//
+/rs_painter.cpp/1.13/Thu Dec  9 23:09:53 2004//
+/rs_painter.h/1.11/Tue Nov 30 02:11:32 2004//
+/rs_painteradapter.h/1.2/Sun Apr  4 22:48:00 2004//
+/rs_painterqt.cpp/1.18/Thu Dec  9 23:09:53 2004//
+/rs_painterqt.h/1.8/Wed Mar  3 19:06:13 2004//
+/rs_staticgraphicview.cpp/1.1/Mon Aug 25 22:50:31 2003//
+/rs_staticgraphicview.h/1.1/Mon Aug 25 22:50:31 2003//
+D
