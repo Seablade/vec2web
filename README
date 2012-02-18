@@ -1,0 +1,1 @@
+vec2web is a program to convert DXF files to various formats.  This is a fork of the code in order to fix a few issues for my own purposes and bring it up to date to allow for compilation on semi-modern systems.  Hopefully eventually it will involve updating to QT4 and overhauling much of it, but that is in the distant future.
