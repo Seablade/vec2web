@@ -1,0 +1,20 @@
+#!/bin/sh
+# convert dxf's to png
+# sample command:
+# vec2web.sh input.dxf output.png 1024
+ 
+DIR=`pwd`
+QCAD=~/.local/vec2web/
+ 
+if [ -z "$1" -o -z "$2" -o -z "$3" ] ; then
+	echo $0 input.dxf output.ps pagesize
+	exit 1
+fi
+ 
+S=$3
+ 
+cd "$QCAD"
+ 
+./vec2web "$DIR/$1" "$DIR/$2" -s $S
+
+cd "$DIR"
