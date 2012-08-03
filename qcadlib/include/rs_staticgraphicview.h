@@ -1,0 +1,1 @@
+../src/gui/rs_staticgraphicview.h

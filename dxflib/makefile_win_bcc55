@@ -1,0 +1,77 @@
+####### Compiler, tools and options
+
+#BCB = D:\Borland\BCC55
+CC	= bcc32
+CXX	= bcc32
+CFLAGS	=	-tWR -w -w-hid -tWM -O2 -v
+CXXFLAGS=	-tWR -w -w-hid -tWM -O2 -v
+INCPATH	=	 -I"$(BCB)\include"
+LIB     =   tlib /C /P256
+#LIBS	=	import32.lib $(BCB)\lib\PSDK\odbc32.lib cw32mti.lib
+ZIP	=	zip -r -9
+DEF_FILE =	
+RES_FILE =	
+COPY  =       copy
+DEL   =       del
+MOVE  =       move
+
+####### Files
+HEADERS =	src\dl_attributes.h \
+src\dl_codes.h \
+src\dl_color.h \
+src\dl_creationinterface.h \
+src\dl_dxf.h \
+src\dl_entities.h \
+src\dl_exception.h \
+src\dl_writer.h \
+src\dl_writer_ascii.h
+SOURCES =	src\dl_dxf.cpp \
+src\dl_writer_ascii.cpp
+OBJECTS =	src\dl_dxf.obj \
+		src\dl_writer_ascii.obj
+FORMS =	
+DIST	=	
+TARGET	=	lib\dxf.lib
+
+####### Implicit rules
+
+.SUFFIXES: .cpp .cxx .cc .c
+
+.cpp.obj:
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o$@ $<
+
+.cxx.obj:
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o$@ $<
+
+.cc.obj:
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o$@ $<
+
+.c.obj:
+	$(CC) -c $(CFLAGS) $(INCPATH) -o$@ $<
+
+####### Build rules
+
+all:  $(TARGET)
+
+$(TARGET): $(UICDECLS) $(OBJECTS)
+	$(LIB) $(TARGET) @&&|
++src\dl_dxf.obj \
++src\dl_writer_ascii.obj
+|
+
+clean:
+	-del src\*.obj
+	-del $(TARGET)
+
+####### Compile
+
+#src\dl_creationinterface.obj: src\dl_creationinterface.h
+#	$(CXX) -c $(CXXFLAGS) $(INCPATH) -osrc\dl_creationinterface.obj src\\dl_creationinterface.h
+
+#src\dl_dxf.obj: src\dl_dxf.h src\dl_dxf.cpp
+#	$(CXX) -c $(CXXFLAGS) $(INCPATH) -osrc\dl_dxf.obj src\\dl_dxf.cpp
+
+####### Install
+
+install: all 
+
