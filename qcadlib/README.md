@@ -10,14 +10,6 @@ License Information
 This program is covered with GNU General Public License (GPL).
 
 
-What is qcadlib ? 
-=================
-
-
-Dependencies
-============
---
-
 CONTACT
 =======
 

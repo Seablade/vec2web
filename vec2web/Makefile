@@ -3,7 +3,6 @@
 VERSION = 0.0.2
 
 # vec2web installation directories
-#
 
 # default: /usr/local/...
 #LIBDIR = /usr/local/lib
